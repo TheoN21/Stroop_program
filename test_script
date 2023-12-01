@@ -1,0 +1,29 @@
+import pygame
+from pygame.locals import *
+clock = pygame.time.Clock()
+pygame.init()
+screen = pygame.display.set_mode((500, 500))
+screen.fill("gray")
+pygame.display.update()
+pygame.event.clear()
+running = True
+
+
+# calculate reaction time and store it use get_rawtime() and clock and tick_busy_loop()
+
+
+while running:
+    for event in pygame.event.get():
+        if event.type == pygame.KEYDOWN:
+            print("Keydown")
+            pygame.event.clear()
+            if event.key == pygame.K_SPACE:
+                print("Space key")
+                clock.tick()
+                pygame.event.clear()
+                reaction_ink = pygame.event.wait()
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_SPACE:
+                    # this code cannot be reached!!!!!
+                    reactiontime = clock.get_rawtime()
+                    print('double')
+                    print(reactiontime)
