@@ -2,7 +2,6 @@
 #Author: Theodor Nowicki
 
 import pygame
-from pygame.locals import *
 import sys
 import numpy as np
 import pandas as pd
