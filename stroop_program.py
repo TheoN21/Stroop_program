@@ -509,12 +509,12 @@ while main:
                             pygame.event.pump()
                             pygame.time.delay(2000)
                             pygame.event.clear()    # use this and next line to wait for an event such as keypress!!!!
-                            new_event = pygame.event.wait()     # use this and line above to wait for a new event such as keypress!!!
-                            if new_event.type == pygame.KEYDOWN and new_event.key == pygame.K_ESCAPE:
+                            first_test_event = pygame.event.wait()     # use this and line above to wait for a new event such as keypress!!!
+                            if first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_ESCAPE:
                                 main = False
                                 pygame.quit()
                                 sys.exit()
-                            if new_event.type == pygame.KEYDOWN and new_event.key == pygame.K_SPACE:  # I need to block all other key input!!!!!!
+                            if first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_SPACE:  # I need to block all other key input!!!!!!
                                 # task1 cuedversion
                                 cued_ink_block()
                                 switch()
