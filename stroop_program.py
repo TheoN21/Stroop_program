@@ -2,6 +2,7 @@
 #Author: Theodor Nowicki
 
 import pygame
+from pygame.locals import *
 import sys
 import numpy as np
 import pandas as pd
@@ -11,13 +12,11 @@ import time
 import random
 
 # To dos:
-# 2. figure ot how to quit program even during trials and blocks!!!!!
-# 3. fix full-screen mode
-# 4. have correct button press (Hardware!)
-# 5. calculate RT and store it  as a dataframe to calculate median std. etc. and then store it in a PDF file
-# 6. add auditory feedback only for mistake (function)
-# add a short exercise round
-# 7. save game as a .exe file
+
+# 1. fix full-screen mode
+# 2. have correct button press (Hardware!)
+# 3. calculate RT and store it  as a dataframe to calculate median std. etc. and then store it in a PDF file
+# 4. save game as a .exe file
 
 
 
@@ -67,8 +66,9 @@ pygame.font.init()
 font = pygame.font.SysFont('verdana.ttf', 100)
 fontsmall = pygame.font.SysFont('verdana.ttf', 40)
 # Render the texts that you want to display
-textStart = fontsmall.render('Drücken Sie bitte die Leertaste um den Test zu starten', True, (255, 255, 255))
-textTask11 = fontsmall.render('Drücken Sie bitte die Leertaste um den ersten Teil des Tests zu starten', True, (255, 255, 255))
+textStart = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung zu kommen.', True, (255, 255, 255))
+textTask11 = fontsmall.render('Drücken Sie bitte die Leertaste um den ersten Teil des Tests zu starten.', True, (255, 255, 255))
+textTask12 = fontsmall.render('Drücken Sie bitte eine andere Taste um die Anleitung und die Übung zu Wiederholen.', True, (255, 255, 255))
 textweiter = fontsmall.render('Drücken Sie bitte die Leertaste um fortzufahren', True, (255, 255, 255))
 textexercise = fontsmall.render('Drücken Sie bitte die Leertaste um die Übung zu starten', True, (255, 255, 255))
 
@@ -101,8 +101,8 @@ textSwitch = font.render('WECHSEL', True, (255, 255, 255))
 textNoncue = font.render('BEREIT', True, (255, 255, 255))
 
 
-
-
+pygame.mixer.init()
+error_sound = pygame.mixer.Sound("error_sound.ogg")
 '''
 Setup
 '''
@@ -119,6 +119,9 @@ screen = pygame.display.set_mode((desk_info.current_w, desk_info.current_h), pyg
 
 
 pygame.event.set_blocked([pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP,pygame.MOUSEMOTION, pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,pygame.WINDOWFOCUSGAINED,pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
+
+
+
 '''
 Functions
 '''
@@ -150,7 +153,7 @@ def cued_word_trial(n):
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
-            # put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
     if n == 2:
         screen.fill(pygame.Color("gray40"))
         screen.blit(textWord, (600, 300))
@@ -176,7 +179,7 @@ def cued_word_trial(n):
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
-            # put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
 
 def cued_ink_trial(n):
     if n == 1:
@@ -204,6 +207,7 @@ def cued_ink_trial(n):
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
+            pygame.mixer.Sound.play(error_sound)
     if n == 2:
         screen.fill(pygame.Color("gray40"))
         screen.blit(textInk, (480, 300))
@@ -229,20 +233,16 @@ def cued_ink_trial(n):
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
-            # put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
 def switch():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textSwitch, (580, 300))
+    screen.blit(textSwitch, (560, 300))
     pygame.display.flip()
     pygame.event.pump()
     pygame.time.delay(2000)
 
 
 def cued_word_block():
-    if event.type == pygame.QUIT:
-        main = False
-        pygame.quit()
-        sys.exit()
     trials = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2]
     x = np.random.choice(trials, size=10, replace=False)
     n = x[0]
@@ -265,15 +265,8 @@ def cued_word_block():
     cued_word_trial(n)
     n = x[9]
     cued_word_trial(n)
-    if event.type == pygame.QUIT:
-        main = False
-        pygame.quit()
-        sys.exit()
+
 def cued_ink_block():
-    if event.type == pygame.QUIT:
-        main = False
-        pygame.quit()
-        sys.exit()
     trials = [1, 1, 1, 1, 1, 2, 2, 2, 2, 2]
     x = np.random.choice(trials, size=10, replace=False)
     n = x[0]
@@ -296,10 +289,6 @@ def cued_ink_block():
     cued_ink_trial(n)
     n = x[9]
     cued_ink_trial(n)
-    if event.type == pygame.QUIT:
-        main = False
-        pygame.quit()
-        sys.exit()
 
 
 def cued_ink_exercise_trial(n):
@@ -322,10 +311,9 @@ def cued_ink_exercise_trial(n):
             sys.exit()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
             clock.tick()
-            # no feedback maybe RT
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
             clock.tick()
-            #auditory feedback
+            pygame.mixer.Sound.play(error_sound)
     if n == 2:
         screen.fill(pygame.Color("gray40"))
         screen.blit(textInk, (480, 300))
@@ -345,10 +333,9 @@ def cued_ink_exercise_trial(n):
             sys.exit()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
             clock.tick()
-            #no feedback maybe RT
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
             clock.tick()
-            #put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
 
 def cued_word_exercise_trial(n):
     if n == 1:
@@ -370,10 +357,9 @@ def cued_word_exercise_trial(n):
             sys.exit()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
             clock.tick()
-            # no feedback maybe RT
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
             clock.tick()
-            # put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
     if n == 2:
         screen.fill(pygame.Color("gray40"))
         screen.blit(textWord, (600, 300))
@@ -393,16 +379,17 @@ def cued_word_exercise_trial(n):
             sys.exit()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
             clock.tick()
-            # no feedback maybe RT
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
             clock.tick()
-            # put auditory feedback here
+            pygame.mixer.Sound.play(error_sound)
 def exercise_block():
     cued_ink_exercise_trial(1)
-    cued_word_exercise_trial(2)
-    cued_ink_exercise_trial(2)
-    cued_word_exercise_trial(1)
     cued_ink_exercise_trial(1)
+    cued_ink_exercise_trial(2)
+    switch()
+    cued_word_exercise_trial(2)
+    cued_word_exercise_trial(1)
+
 
 
 
@@ -415,7 +402,7 @@ Main Loop
 while main:
     current_time = pygame.time.get_ticks()
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textStart, (370, 300))  # change instructions to space key!!!!!!
+    screen.blit(textStart, (320, 300))
     pygame.display.update()
     pygame.event.pump()
     events = pygame.event.get()
@@ -432,7 +419,7 @@ while main:
             screen.blit(textInstructions22, (440, 300))
             pygame.display.flip()  # always use after showing sth new on screen!!!
             pygame.event.pump()
-            pygame.time.delay(1000)
+            pygame.time.delay(200)
             screen.blit(textweiter, (420, 800))
             pygame.display.flip()  # always use after showing sth new on screen!!!
             pygame.event.pump()
@@ -446,7 +433,7 @@ while main:
                 screen.blit(textInstructions3, (620, 350))
                 pygame.display.flip()  # always use after showing sth new on screen!!!
                 pygame.event.pump()
-                pygame.time.delay(1000)
+                pygame.time.delay(200)
                 screen.blit(textweiter, (420, 800))
                 pygame.display.flip()  # always use after showing sth new on screen!!!
                 pygame.event.pump()
@@ -460,7 +447,7 @@ while main:
                     screen.blit(textInstructions4, (640, 400))
                     pygame.display.flip()  # always use after showing sth new on screen!!!
                     pygame.event.pump()
-                    pygame.time.delay(2000)
+                    pygame.time.delay(200)
                     screen.blit(textweiter, (420, 800))
                     pygame.display.flip()  # always use after showing sth new on screen!!!
                     pygame.event.pump()
@@ -488,7 +475,7 @@ while main:
                         screen.blit(textInstructions18, (150, 750))
                         pygame.display.flip()  # always use after showing sth new on screen!!!
                         pygame.event.pump()
-                        pygame.time.delay(2000)
+                        pygame.time.delay(200)
                         screen.blit(textexercise, (420, 800))
                         pygame.display.flip()  # always use after showing sth new on screen!!!
                         pygame.event.pump()
@@ -506,7 +493,7 @@ while main:
                             screen.blit(textTask11, (150, 850))
                             pygame.display.flip()
                             pygame.event.pump()
-                            pygame.time.delay(2000)
+                            pygame.time.delay(1000)
                             pygame.event.clear()    # use this and next line to wait for an event such as keypress!!!!
                             first_test_event = pygame.event.wait()     # use this and line above to wait for a new event such as keypress!!!
                             if first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_ESCAPE:
