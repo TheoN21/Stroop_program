@@ -6,6 +6,7 @@ import sys
 import os
 import numpy as np
 import pandas as pd
+import openpyxl
 from fpdf import FPDF
 from fpdf.fonts import FontFace
 from fpdf.enums import TableCellFillMode
@@ -19,11 +20,16 @@ from fpdf.enums import TableCellFillMode
 
 
 # 1. fix full-screen mode
-# Figure out why pressing a key for long makes program jump back to the beginning
+
+
+# Figure out why pressing a key for long makes program jump back to the beginning  especially in second test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 # 2. have correct button press (Hardware!) and maybe add that if a completely different key was pressed it is added as wrong to another list
+
+
 # 3. calculate RT and store it  as a dataframe to calculate median std. etc. and then store it in a PDF file
-#    so that PDF is also saved if escape is pressed before finishing entire test
-#    print out also an excel file with data!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#    so that PDF is also saved if escape is pressed before finishing entire test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#     change header and column names!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#
 
 # 5. Create two version: one where the cued test is first and one where the uncued test is first
 # 6. save game as a .exe file
@@ -72,7 +78,7 @@ textTask22 = fontsmall.render('Drücken Sie bitte die Leertaste um den zweiten T
 textweiter = fontsmall.render('Drücken Sie bitte die Leertaste um fortzufahren', True, (255, 255, 255))
 textexercise = fontsmall.render('Drücken Sie bitte die Leertaste um die Übung zu starten', True, (255, 255, 255))
 text_wait1 = fontsmall.render('Test wurde angehalten! ', True, (255, 255, 255))
-text_wait2 = fontsmall.render('Drücken Sie bitte Escape um abzubrechen oder eine andere Taste um fortzufahren.', True, (255, 255, 255))
+text_wait2 = fontsmall.render('Drücken Sie bitte Escape um abzubrechen oder die Taste W um fortzufahren.', True, (255, 255, 255))
 
 
 
@@ -195,7 +201,7 @@ def cued_word_trial(n):
                 main = False
                 pygame.quit()
                 sys.exit()
-            else:
+            else: #continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_w:
                 cued_word_blue()
                 clock.tick()
                 pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
@@ -205,7 +211,7 @@ def cued_word_trial(n):
                     main = False
                     pygame.quit()
                     sys.exit()
-                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_word_correct.append(RT_correct)
@@ -214,11 +220,11 @@ def cued_word_trial(n):
                     RT_wrong = clock.get_rawtime()
                     RT_list_cued_word_wrong.append(RT_wrong)
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_cued_word_correct.append(RT_correct)
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
@@ -252,7 +258,7 @@ def cued_word_trial(n):
                     main = False
                     pygame.quit()
                     sys.exit()
-                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_word_correct.append(RT_correct)
@@ -261,12 +267,12 @@ def cued_word_trial(n):
                     RT_wrong = clock.get_rawtime()
                     RT_list_cued_word_wrong.append(RT_wrong)
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_cued_word_correct.append(RT_correct)
         else:
-            #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+            #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
@@ -323,23 +329,23 @@ def cued_ink_trial(n):
                 clock.tick()
                 pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_ink_correct.append(RT_correct)
                     print(f'this is RT for wait correct{RT_correct}')
-                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_wrong = clock.get_rawtime()
                     RT_list_cued_ink_wrong.append(RT_wrong)
                     print(f'this is RT for wait wrong {RT_wrong}')
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_cued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
@@ -369,7 +375,7 @@ def cued_ink_trial(n):
                 clock.tick()
                 pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_ink_correct.append(RT_correct)
@@ -380,12 +386,12 @@ def cued_ink_trial(n):
                     RT_list_cued_ink_wrong.append(RT_wrong)
                     print(f'this is RT for wait wrong {RT_wrong}')
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_cued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
@@ -457,9 +463,9 @@ def cued_ink_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             main = True
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             pygame.mixer.Sound.play(error_sound)
     else:
         cued_ink_yellow()
@@ -469,9 +475,9 @@ def cued_ink_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             main = True
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             pygame.mixer.Sound.play(error_sound)
 
 def cued_word_exercise_trial(n):
@@ -483,9 +489,9 @@ def cued_word_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             main = True
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             pygame.mixer.Sound.play(error_sound)
     else:
         cued_word_yellow()
@@ -495,9 +501,9 @@ def cued_word_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             main = True
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             pygame.mixer.Sound.play(error_sound)
 
 
@@ -570,7 +576,7 @@ def uncued_word_trial(n):
                     main = False
                     pygame.quit()
                     sys.exit()
-                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_word_correct.append(RT_correct)
@@ -579,11 +585,11 @@ def uncued_word_trial(n):
                     RT_wrong = clock.get_rawtime()
                     RT_list_uncued_word_wrong.append(RT_wrong)
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_uncued_word_correct.append(RT_correct)
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_word_wrong.append(RT_wrong)
@@ -617,7 +623,7 @@ def uncued_word_trial(n):
                     main = False
                     pygame.quit()
                     sys.exit()
-                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+                elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_word_correct.append(RT_correct)
@@ -626,12 +632,12 @@ def uncued_word_trial(n):
                     RT_wrong = clock.get_rawtime()
                     RT_list_uncued_word_wrong.append(RT_wrong)
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_uncued_word_correct.append(RT_correct)
         else:
-            # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+            # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_word_wrong.append(RT_wrong)
@@ -687,23 +693,23 @@ def uncued_ink_trial(n):
                 clock.tick()
                 pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_ink_correct.append(RT_correct)
                     print(f'this is RT for wait correct{RT_correct}')
-                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_wrong = clock.get_rawtime()
                     RT_list_uncued_ink_wrong.append(RT_wrong)
                     print(f'this is RT for wait wrong {RT_wrong}')
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_uncued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_ink_wrong.append(RT_wrong)
@@ -733,7 +739,7 @@ def uncued_ink_trial(n):
                 clock.tick()
                 pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_ink_correct.append(RT_correct)
@@ -744,12 +750,12 @@ def uncued_ink_trial(n):
                     RT_list_uncued_ink_wrong.append(RT_wrong)
                     print(f'this is RT for wait wrong {RT_wrong}')
                     pygame.mixer.Sound.play(error_sound)
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_uncued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_ink_wrong.append(RT_wrong)
@@ -817,9 +823,9 @@ def uncued_ink_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             main = True
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             pygame.mixer.Sound.play(error_sound)
     else:
         uncued_ink_yellow()
@@ -829,9 +835,9 @@ def uncued_ink_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_RIGHT:
+        elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             main = True
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_LEFT:
+        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             pygame.mixer.Sound.play(error_sound)
 
 
@@ -844,9 +850,9 @@ def uncued_word_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             main = True
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             pygame.mixer.Sound.play(error_sound)
     else:
         uncued_word_yellow()
@@ -856,9 +862,9 @@ def uncued_word_exercise_trial(n):
             main = False
             pygame.quit()
             sys.exit()
-        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_LEFT:
+        elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             main = True
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_RIGHT:
+        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             pygame.mixer.Sound.play(error_sound)
 
 
@@ -893,26 +899,105 @@ def uncued_exercise_block():
     uncued_word_exercise_trial(2)
 
 
-
-class PDF(FPDF):
-    def header(self):
-        # Setting font: helvetica bold 15
-        self.set_font("helvetica", "B", 18)
-        # Moving cursor to the right:
-        self.cell(80)
-        # Printing title:
-        self.cell(30, 10, "Stroop Test Ergebnis", border=1, align="C")
-        # Performing a line break:
-        self.ln(20)
-
-    def footer(self):
-        # Position cursor at 1.5 cm from bottom:
-        self.set_y(-15)
-        # Setting font: helvetica italic 8
-        self.set_font("helvetica", "I", 8)
-        # Printing page number:
-        self.cell(0, 10, f"Page {self.page_no()}/{{nb}}", align="C")
-
+def create_pdf():
+    df_cued = pd.DataFrame(
+        [RT_list_cued_ink_correct, RT_list_cued_ink_wrong,
+         RT_list_cued_word_correct,
+         RT_list_cued_word_wrong])
+    df_cued = df_cued.transpose()
+    median_row = df_cued.median(axis=0).round(2).fillna(0)
+    count_row = df_cued.count(axis=0).round(2).fillna(0)
+    sd_row = df_cued.std(axis=0).round(2).fillna(0)
+    min_row = df_cued.min(axis=0).round(2).fillna(0)
+    max_row = df_cued.max(axis=0).round(2).fillna(0)
+    columns = pd.Series([
+        'RZ Farbe Korrekt',
+        'RZ Farbe Fehler',
+        'RZ Lesen Korrekt',
+        'RZ Lesen Fehler'])
+    df_cued_stats = pd.concat(
+        [columns, count_row, median_row, sd_row, min_row, max_row],
+        axis=1, ignore_index=True)
+    df_cued_stats = df_cued_stats.transpose()
+    df_cued_stats.index = ['Statistik', 'Anzahl', 'Median',
+                           'SD', 'Minimum', 'Maximum']
+    cuedrecord = df_cued_stats.to_records()
+    df_uncued = pd.DataFrame(
+        [RT_list_uncued_ink_correct, RT_list_uncued_ink_wrong,
+         RT_list_uncued_word_correct,
+         RT_list_uncued_word_wrong])
+    df_uncued = df_uncued.transpose()
+    uncued_median_row = df_uncued.median(axis=0).round(2).fillna(0)
+    uncued_count_row = df_uncued.count(axis=0).round(2).fillna(0)
+    uncued_sd_row = df_uncued.std(axis=0).round(2).fillna(0)
+    uncued_min_row = df_uncued.min(axis=0).round(2).fillna(0)
+    uncued_max_row = df_uncued.max(axis=0).round(2).fillna(0)
+    uncued_columns = pd.Series([
+        'RZ Farbe Korrekt',
+        'RZ Farbe Fehler',
+        'RZ Lesen Korrekt',
+        'RZ Lesen Fehler'])
+    df_uncued_stats = pd.concat(
+        [uncued_columns, uncued_count_row, uncued_median_row, uncued_sd_row, uncued_min_row,
+         uncued_max_row],
+        axis=1, ignore_index=True)
+    df_uncued_stats = df_uncued_stats.transpose()
+    df_uncued_stats.index = ['Statistik', 'Anzahl', 'Median',
+                             'SD', 'Minimum', 'Maximum']
+    uncuedrecord = df_uncued_stats.to_records()
+    pdf = FPDF(orientation='P', unit='cm', format='A4')
+    pdf.add_page()
+    pdf.set_font("helvetica", "B", 18)
+    pdf.cell(19, 2, "Stroop Test Ergebnis", border=0,
+             align="C")
+    # Performing a line break:
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=14, style='B')
+    pdf.cell(19.2, 2, text='Erster Test mit Cue', border=0, align='C')
+    pdf.ln(2)  ######
+    pdf.set_margins(left=1.9, right=1.9, top=2.9)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_line_width(0.05)
+    pdf.set_font('helvetica', size=12)
+    with pdf.table(
+            borders_layout="ALL",
+            cell_fill_color=(224, 235, 255),
+            cell_fill_mode=TableCellFillMode.ROWS,
+            col_widths=(30, 30, 30, 30, 30),
+            line_height=2.5 * pdf.font_size,
+            text_align="CENTER",
+            width=13.4,
+            first_row_as_headings=False
+    ) as table:
+        for data_row in cuedrecord:
+            row = table.row()
+            for datum in data_row:
+                text = str(datum).encode('utf-8').decode(
+                    'latin-1')
+                row.cell(text)
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=14, style='B')
+    pdf.cell(17.5, 2, text='Zweiter Test ohne Cue',
+             border=0, align='C')
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=12)
+    with pdf.table(
+            borders_layout="ALL",
+            cell_fill_color=(224, 235, 255),
+            cell_fill_mode=TableCellFillMode.ROWS,
+            col_widths=(30, 30, 30, 30, 30),
+            line_height=2.5 * pdf.font_size,
+            text_align="CENTER",
+            width=13.4,
+            first_row_as_headings=False
+    ) as table:
+        for data_row in uncuedrecord:
+            row = table.row()
+            for datum in data_row:
+                text = str(datum).encode('utf-8').decode(
+                    'latin-1')
+                row.cell(text)
+    pdf.output('Stroop_Cue_Zuerst_PDF')
 
 
 '''
@@ -1026,7 +1111,7 @@ while main:
                                 pygame.quit()
                                 sys.exit()
                             elif exercise_event.type == pygame.KEYDOWN and exercise_event.key == pygame.K_SPACE:
-                                exercise_block()
+                                #exercise_block()
                                 screen.fill(pygame.Color("gray40"))
                                 screen.blit(textTask1, (280, 850))
                                 pygame.display.flip()
@@ -1043,14 +1128,14 @@ while main:
                                     cued_ink_block()
                                     switch()
                                     cued_word_block()
-                                    switch()
-                                    cued_ink_block()
-                                    switch()
-                                    cued_word_block()
-                                    switch()
-                                    cued_ink_block()
-                                    switch()
-                                    cued_word_block()
+                                    #switch()
+                                    #cued_ink_block()
+                                    #switch()
+                                    #cued_word_block()
+                                    #switch()
+                                    #cued_ink_block()
+                                    #switch()
+                                    #cued_word_block()
                                     pygame.time.delay(200)
                                     screen.fill(pygame.Color("gray40"))
                                     screen.blit(textTask21, (200, 850))
@@ -1147,7 +1232,7 @@ while main:
                                                             pygame.quit()
                                                             sys.exit()
                                                         elif uncued_exercise_event.type == pygame.KEYDOWN and uncued_exercise_event.key == pygame.K_SPACE:
-                                                            uncued_exercise_block()
+                                                            #uncued_exercise_block()
                                                             screen.fill(pygame.Color("gray40"))
                                                             screen.blit(textTask22, (300, 850))
                                                             pygame.display.flip()
@@ -1165,62 +1250,14 @@ while main:
                                                                 uncued_ink_block()
                                                                 word()
                                                                 uncued_word_block()
-                                                                ink()
-                                                                uncued_ink_block()
-                                                                word()
-                                                                uncued_word_block()
-                                                                ink()
-                                                                uncued_ink_block()
-                                                                word()
-                                                                uncued_word_block()
-                                                                df_cued = pd.DataFrame(
-                                                                    [RT_list_cued_ink_correct, RT_list_cued_ink_wrong,
-                                                                     RT_list_cued_word_correct,
-                                                                     RT_list_cued_word_wrong])
-                                                                df_cued = df_cued.transpose()
-                                                                median_row = df_cued.median(axis=0)
-                                                                count_row = df_cued.count(axis=0)
-                                                                sd_row = df_cued.std(axis=0)
-                                                                min_row = df_cued.min(axis=0)
-                                                                max_row = df_cued.max(axis=0)
-                                                                df_cued_stats = pd.concat(
-                                                                    [count_row, median_row, sd_row, min_row, max_row],
-                                                                    axis=1, ignore_index=True)
-                                                                df_cued_stats = df_cued_stats.transpose()
-                                                                df_cued_stats = df_cued_stats.round(2)
-                                                                df_cued_stats = df_cued_stats.fillna(0)
-                                                                df_cued_stats.columns = [
-                                                                    'Reaktionszeit_Druckfarbe_Korrekt',
-                                                                    'Reaktionszeit_Druckfarbe_Fehler',
-                                                                    'Reaktionszeit_Lesen_Korrekt',
-                                                                    'Reaktionszeit_Lesen_Fehler']
-                                                                df_cued_stats.index = ['Anzahl', 'Median', 'SD',
-                                                                                       'Minimum', 'Maximum']
-                                                                print(df_cued_stats.head(5))
-                                                                print(df_cued_stats.describe())
-                                                                print(df_cued)
-                                                                pdf = FPDF(orientation='P', unit='cm', format='A4')
-                                                                pdf.add_page()
-                                                                pdf.set_font('helvetica', size=12)
-                                                                pdf.set_margins(left=1.9, right=1.9, top=2.9)
-                                                                pdf.set_draw_color(255, 0, 0)
-                                                                pdf.set_line_width(0.3)
-                                                                headings_style = FontFace(emphasis="BOLD", color=255,
-                                                                                          fill_color=(255, 100, 0))
-                                                                with pdf.table(
-                                                                        borders_layout="ALL",
-                                                                        cell_fill_color=(224, 235, 255),
-                                                                        cell_fill_mode=TableCellFillMode.ROWS,
-                                                                        col_widths=(30, 30, 30, 30),
-                                                                        headings_style=headings_style,
-                                                                        line_height=2.5 * pdf.font_size,
-                                                                        text_align="CENTER",
-                                                                        width=13.4,
-                                                                ) as table:
-                                                                    for data_row in df_cued_stats:
-                                                                        row = table.row()
-                                                                        for datum in data_row:
-                                                                            row.cell(datum)
-                                                                pdf.output('Stroop_PDF')
+                                                                #ink()
+                                                                #uncued_ink_block()
+                                                                #word()
+                                                                #uncued_word_block()
+                                                                #ink()
+                                                                #uncued_ink_block()
+                                                                #word()
+                                                                #uncued_word_block()
+                                                                create_pdf()
                                                                 pygame.quit()
                                                                 sys.exit()
