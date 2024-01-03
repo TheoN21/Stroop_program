@@ -6,7 +6,6 @@ import sys
 import os
 import numpy as np
 import pandas as pd
-import openpyxl
 from fpdf import FPDF
 from fpdf.fonts import FontFace
 from fpdf.enums import TableCellFillMode
@@ -26,11 +25,6 @@ from fpdf.enums import TableCellFillMode
 # 2. have correct button press (Hardware!) and maybe add that if a completely different key was pressed it is added as wrong to another list
 
 
-# 3. calculate RT and store it  as a dataframe to calculate median std. etc. and then store it in a PDF file
-#    so that PDF is also saved if escape is pressed before finishing entire test!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#     change header and column names!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#
-
 # 5. Create two version: one where the cued test is first and one where the uncued test is first
 # 6. save game as a .exe file
 
@@ -39,7 +33,6 @@ from fpdf.enums import TableCellFillMode
 '''
 Variables
 '''
-# put variables here
 main = True
 
 fps = 40     # frame rate
@@ -64,15 +57,12 @@ RT_list_uncued_word_correct = []
 RT_list_uncued_word_wrong = []
 
 
-# Create a font file by passing font file
-# and size of the font
+# font file
 pygame.font.init()
 font = pygame.font.SysFont('verdana.ttf', 100)
 fontsmall = pygame.font.SysFont('verdana.ttf', 40)
-# Render the texts that you want to display
 textStart = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung zu kommen.', True, (255, 255, 255))
 textTask1 = fontsmall.render('Drücken Sie bitte die Leertaste um den ersten Teil des Tests zu starten.', True, (255, 255, 255))
-#textTask12 = fontsmall.render('Drücken Sie bitte eine andere Taste um die Anleitung und die Übung zu Wiederholen.', True, (255, 255, 255))
 textTask21 = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung des zweiten Teil des Tests zu kommen.', True, (255, 255, 255))
 textTask22 = fontsmall.render('Drücken Sie bitte die Leertaste um den zweiten Teil des Test zu starten.', True, (255, 255, 255))
 textweiter = fontsmall.render('Drücken Sie bitte die Leertaste um fortzufahren', True, (255, 255, 255))
@@ -81,41 +71,26 @@ text_wait1 = fontsmall.render('Test wurde angehalten! ', True, (255, 255, 255))
 text_wait2 = fontsmall.render('Drücken Sie bitte Escape um abzubrechen oder die Taste W um fortzufahren.', True, (255, 255, 255))
 
 
-
-#textInstructions1 = fontsmall.render("In diesem Test geht es um Schnelligkeit und Genauigkeit!", True, (255, 255, 255))
-#textInstructions21 = fontsmall.render("Im Test wird ein Farbwort gezeigt zum Beispiel GELB,", True, (255, 255, 255))
-#textInstructions22 = fontsmall.render("was in einer anderen Farbe geschrieben ist.", True, (255, 255, 255))
+textInstructions1 = fontsmall.render("Im Folgenden sehen Sie Farbwörter in blau und gelb geschrieben. Dabei sind", True, (255, 255, 255))
+textInstructions2 = fontsmall.render("Farbe und Farbwort stets verschieden.", True, (255, 255, 255))
 textInstructions3 = fontsmall.render("Hier ein Beispiel:", True, (255, 255, 255))
-
-
-
-
-textInstructions5 = fontsmall.render("Im Folgenden sehen Sie Farbwörter in blau und gelb geschrieben. Dabei sind", True, (255, 255, 255))
-textInstructions6 = fontsmall.render("Farbe und Farbwort stets verschieden.", True, (255, 255, 255))
-textInstructions7 = fontsmall.render("Sie bekommen immer die Anweisung, ob Sie auf die Farbe, in der das Wort ", True, (255, 255, 255))
-textInstructions8 = fontsmall.render("geschrieben ist, reagieren sollen (in diesem Beispiel „blau“) oder ob Sie ", True, (255, 255, 255))
-textInstructions9 = fontsmall.render("das Wort lesen sollen (in diesem Beispiel „gelb“). ", True, (255, 255, 255))
-
-textInstructions10 = fontsmall.render("Vor jedem Reiz bekommen Sie angezeigt, ob Sie lesen sollen oder auf die", True, (255, 255, 255))
-textInstructions11 = fontsmall.render("Schriftfarbe reagieren sollen.", True, (255, 255, 255))
-textInstructions12 = fontsmall.render("Nach einer Weile erscheint das Wort „Wechsel“ und Sie lesen anschließend", True, (255, 255, 255))
-textInstructions13 = fontsmall.render("die Farbwörter oder reagieren auf die Schriftfarbe. Bei Fehlern ertönt ein Warnton. ", True, (255, 255, 255))
-textInstructions14 = fontsmall.render("Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
-
+textInstructions4 = fontsmall.render("Sie bekommen immer die Anweisung, ob Sie auf die Farbe, in der das Wort ", True, (255, 255, 255))
+textInstructions5 = fontsmall.render("geschrieben ist, reagieren sollen (in diesem Beispiel „blau“) oder ob Sie ", True, (255, 255, 255))
+textInstructions6 = fontsmall.render("das Wort lesen sollen (in diesem Beispiel „gelb“). ", True, (255, 255, 255))
+textInstructions7 = fontsmall.render("Vor jedem Reiz bekommen Sie angezeigt, ob Sie lesen sollen oder auf die", True, (255, 255, 255))
+textInstructions8 = fontsmall.render("Schriftfarbe reagieren sollen.", True, (255, 255, 255))
+textInstructions9 = fontsmall.render("Nach einer Weile erscheint das Wort „Wechsel“ und Sie lesen anschließend", True, (255, 255, 255))
+textInstructions10 = fontsmall.render("die Farbwörter oder reagieren auf die Schriftfarbe. Bei Fehlern ertönt ein Warnton. ", True, (255, 255, 255))
+textInstructions11 = fontsmall.render("Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
 
 textInstruct_uncued1 = fontsmall.render("Im Folgenden sehen Sie Farbwörter in blau und gelb geschrieben. Dabei sind ", True, (255, 255, 255))
 textInstruct_uncued2 = fontsmall.render("Farbe und Farbwort stets verschiedenen.", True, (255, 255, 255))
 textInstruct_uncued3 = fontsmall.render("Sie bekommen immer die Anweisung, ob Sie auf die Farbe, in der das Wort", True, (255, 255, 255))
 textInstruct_uncued4 = fontsmall.render("geschrieben ist, reagieren sollen (in diesem Beispiel „blau“) oder ob Sie ", True, (255, 255, 255))
 textInstruct_uncued5 = fontsmall.render("das Wort lesen sollen (in diesem Beispiel „gelb“).", True, (255, 255, 255))
-
 textInstruct_uncued6 = fontsmall.render("Vor jedem Durchgang bekommen Sie angezeigt, ob Sie lesen sollen oder ", True, (255, 255, 255))
 textInstruct_uncued7 = fontsmall.render("auf die Schriftfarbe reagieren sollen. Bei Fehlern ertönt ein Warnton.", True, (255, 255, 255))
 textInstruct_uncued8 = fontsmall.render("Sie haben jetzt die Möglichkeit den Test zu üben. ", True, (255, 255, 255))
-
-
-
-
 textB = font.render('BLAU', True, 'yellow1')
 textG = font.render('GELB', True, 'mediumblue')
 textInk = font.render('SCHRIFTFARBE', True, (255, 255, 255))
@@ -129,7 +104,7 @@ error_sound = pygame.mixer.Sound("error_sound.ogg")
 '''
 Setup
 '''
-# put run-once code here
+# run-once code
 clock = pygame.time.Clock()
 pygame.init()
 pygame.display.set_caption("Stroop Test")
@@ -139,14 +114,113 @@ scale_x = 1#2160/1463
 scale_y = 1#1440/914
 pygame.event.set_blocked([pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP,pygame.MOUSEMOTION, pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,pygame.WINDOWFOCUSGAINED,pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
 
-
-
 '''
 Functions
 '''
-# put Python functions here
 
 #-------------------------------------------------- Cued test -----------------------------------------------
+
+def create_pdf():
+    df_cued = pd.DataFrame(
+        [RT_list_cued_ink_correct, RT_list_cued_ink_wrong,
+         RT_list_cued_word_correct,
+         RT_list_cued_word_wrong])
+    df_cued = df_cued.transpose()
+    median_row = df_cued.median(axis=0).round(2).fillna(0)
+    count_row = df_cued.count(axis=0).round(2).fillna(0)
+    sd_row = df_cued.std(axis=0).round(2).fillna(0)
+    min_row = df_cued.min(axis=0).round(2).fillna(0)
+    max_row = df_cued.max(axis=0).round(2).fillna(0)
+    columns = pd.Series([
+        'RZ Farbe Korrekt',
+        'RZ Farbe Fehler',
+        'RZ Lesen Korrekt',
+        'RZ Lesen Fehler'])
+    df_cued_stats = pd.concat(
+        [columns, count_row, median_row, sd_row, min_row, max_row],
+        axis=1, ignore_index=True)
+    df_cued_stats = df_cued_stats.transpose()
+    df_cued_stats.index = ['Statistik', 'Anzahl', 'Median',
+                           'SD', 'Minimum', 'Maximum']
+    cuedrecord = df_cued_stats.to_records()
+    df_uncued = pd.DataFrame(
+        [RT_list_uncued_ink_correct, RT_list_uncued_ink_wrong,
+         RT_list_uncued_word_correct,
+         RT_list_uncued_word_wrong])
+    df_uncued = df_uncued.transpose()
+    uncued_median_row = df_uncued.median(axis=0).round(2).fillna(0)
+    uncued_count_row = df_uncued.count(axis=0).round(2).fillna(0)
+    uncued_sd_row = df_uncued.std(axis=0).round(2).fillna(0)
+    uncued_min_row = df_uncued.min(axis=0).round(2).fillna(0)
+    uncued_max_row = df_uncued.max(axis=0).round(2).fillna(0)
+    uncued_columns = pd.Series([
+        'RZ Farbe Korrekt',
+        'RZ Farbe Fehler',
+        'RZ Lesen Korrekt',
+        'RZ Lesen Fehler'])
+    df_uncued_stats = pd.concat(
+        [uncued_columns, uncued_count_row, uncued_median_row, uncued_sd_row, uncued_min_row,
+         uncued_max_row],
+        axis=1, ignore_index=True)
+    df_uncued_stats = df_uncued_stats.transpose()
+    df_uncued_stats.index = ['Statistik', 'Anzahl', 'Median',
+                             'SD', 'Minimum', 'Maximum']
+    uncuedrecord = df_uncued_stats.to_records()
+    pdf = FPDF(orientation='P', unit='cm', format='A4')
+    pdf.add_page()
+    pdf.set_font("helvetica", "B", 18)
+    pdf.cell(19, 2, "Stroop Test Ergebnis", border=0,
+             align="C")
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=14, style='B')
+    pdf.cell(19.2, 2, text='Erster Test mit Cue', border=0, align='C')
+    pdf.ln(2)
+    pdf.set_margins(left=1.9, right=1.9, top=2.9)
+    pdf.set_draw_color(0, 0, 0)
+    pdf.set_line_width(0.05)
+    pdf.set_font('helvetica', size=12)
+    with pdf.table(
+            borders_layout="ALL",
+            cell_fill_color=(224, 235, 255),
+            cell_fill_mode=TableCellFillMode.ROWS,
+            col_widths=(30, 30, 30, 30, 30),
+            line_height=2.5 * pdf.font_size,
+            text_align="CENTER",
+            width=13.4,
+            first_row_as_headings=False
+    ) as table:
+        for data_row in cuedrecord:
+            row = table.row()
+            for datum in data_row:
+                text = str(datum).encode('utf-8').decode(
+                    'latin-1')
+                row.cell(text)
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=14, style='B')
+    pdf.cell(17.5, 2, text='Zweiter Test ohne Cue',
+             border=0, align='C')
+    pdf.ln(2)
+    pdf.set_font('helvetica', size=12)
+    with pdf.table(
+            borders_layout="ALL",
+            cell_fill_color=(224, 235, 255),
+            cell_fill_mode=TableCellFillMode.ROWS,
+            col_widths=(30, 30, 30, 30, 30),
+            line_height=2.5 * pdf.font_size,
+            text_align="CENTER",
+            width=13.4,
+            first_row_as_headings=False
+    ) as table:
+        for data_row in uncuedrecord:
+            row = table.row()
+            for datum in data_row:
+                text = str(datum).encode('utf-8').decode(
+                    'latin-1')
+                row.cell(text)
+    pdf.output('Stroop_Cue_Zuerst_PDF')
+
+
+
 def cued_word_blue():
     screen.fill(pygame.Color("gray40"))
     screen.blit(textWord, (620, 300))
@@ -185,29 +259,29 @@ def cued_word_trial(n):
     if n == 1:
         cued_word_blue()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_word = pygame.event.wait()
             if continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else: #continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_w:
+            else:
                 cued_word_blue()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_word = pygame.event.wait()
                 if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-                    # save dataframe and PDF
+                    create_pdf()
                     main = False
                     pygame.quit()
                     sys.exit()
@@ -224,7 +298,7 @@ def cued_word_trial(n):
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_cued_word_correct.append(RT_correct)
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
@@ -232,29 +306,29 @@ def cued_word_trial(n):
     else:
         cued_word_yellow()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_word = pygame.event.wait()
             if continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else: #lif continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_w:
+            else:
                 cued_word_yellow()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_word = pygame.event.wait()
                 if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-                    # save dataframe and PDF
+                    create_pdf()
                     main = False
                     pygame.quit()
                     sys.exit()
@@ -272,7 +346,6 @@ def cued_word_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_cued_word_correct.append(RT_correct)
         else:
-            #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_word_wrong.append(RT_wrong)
@@ -308,33 +381,38 @@ def cued_ink_trial(n):
     if n == 1:
         cued_ink_blue()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_ink = pygame.event.wait()
             if continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else: #continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_w:
+            else:
                 cued_ink_blue()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+                    create_pdf()
+                    main = False
+                    pygame.quit()
+                    sys.exit()
+                elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_ink_correct.append(RT_correct)
                     print(f'this is RT for wait correct{RT_correct}')
-                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+                else:
                     clock.tick()
                     RT_wrong = clock.get_rawtime()
                     RT_list_cued_ink_wrong.append(RT_wrong)
@@ -345,7 +423,7 @@ def cued_ink_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_cued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
@@ -354,28 +432,33 @@ def cued_ink_trial(n):
     else:
         cued_ink_yellow()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
-            #save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_ink = pygame.event.wait()
             if continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else:# continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_w:
+            else:
                 cued_ink_yellow()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+                    create_pdf()
+                    main = False
+                    pygame.quit()
+                    sys.exit()
+                elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_cued_ink_correct.append(RT_correct)
@@ -391,7 +474,7 @@ def cued_ink_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_cued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_cued_ink_wrong.append(RT_wrong)
@@ -457,57 +540,61 @@ def cued_ink_block():
 def cued_ink_exercise_trial(n):
     if n == 1:
         cued_ink_blue()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             main = True
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+        else:
             pygame.mixer.Sound.play(error_sound)
     else:
         cued_ink_yellow()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             main = True
-        else: #reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+        else:
             pygame.mixer.Sound.play(error_sound)
 
 def cued_word_exercise_trial(n):
     if n == 1:
         cued_word_blue()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             main = True
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
+        else:
             pygame.mixer.Sound.play(error_sound)
     else:
         cued_word_yellow()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             main = True
-        else: #reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
+        else:
             pygame.mixer.Sound.play(error_sound)
 
 
-def exercise_block():
+def cued_exercise_block():
     cued_ink_exercise_trial(1)
     cued_ink_exercise_trial(1)
     cued_ink_exercise_trial(2)
@@ -550,29 +637,29 @@ def uncued_word_trial(n):
     if n == 1:
         uncued_word_blue()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_word = pygame.event.wait()
             if continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
             else:
                 uncued_word_blue()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_word = pygame.event.wait()
                 if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-                    # save dataframe and PDF
+                    create_pdf()
                     main = False
                     pygame.quit()
                     sys.exit()
@@ -589,7 +676,7 @@ def uncued_word_trial(n):
             clock.tick()
             RT_correct = clock.get_rawtime()
             RT_list_uncued_word_correct.append(RT_correct)
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_word_wrong.append(RT_wrong)
@@ -597,29 +684,29 @@ def uncued_word_trial(n):
     else:
         uncued_word_yellow()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_word = pygame.event.wait()
             if continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else:  # lif continue_word.type == pygame.KEYDOWN and continue_word.key == pygame.K_w:
+            else:
                 uncued_word_yellow()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_word = pygame.event.wait()
                 if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
-                    # save dataframe and PDF
+                    create_pdf()
                     main = False
                     pygame.quit()
                     sys.exit()
@@ -637,7 +724,6 @@ def uncued_word_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_uncued_word_correct.append(RT_correct)
         else:
-            # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_word_wrong.append(RT_wrong)
@@ -672,33 +758,38 @@ def uncued_ink_trial(n):
     if n == 1:
         uncued_ink_blue()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_ink = pygame.event.wait()
             if continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else:  # continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_w:
+            else:
                 uncued_ink_blue()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+                    create_pdf()
+                    main = False
+                    pygame.quit()
+                    sys.exit()
+                elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_ink_correct.append(RT_correct)
                     print(f'this is RT for wait correct{RT_correct}')
-                else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+                else:
                     clock.tick()
                     RT_wrong = clock.get_rawtime()
                     RT_list_uncued_ink_wrong.append(RT_wrong)
@@ -709,7 +800,7 @@ def uncued_ink_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_uncued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_ink_wrong.append(RT_wrong)
@@ -718,28 +809,33 @@ def uncued_ink_trial(n):
     else:
         uncued_ink_yellow()
         clock.tick()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
-            # save dataframe and PDF
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_w:
             test_wait()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             continue_ink = pygame.event.wait()
             if continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_ESCAPE:
-                # save dataframe and PDF
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
-            else:  # continue_ink.type == pygame.KEYDOWN and continue_ink.key == pygame.K_w:
+            else:
                 uncued_ink_yellow()
                 clock.tick()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 reaction_ink = pygame.event.wait()
-                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+                if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+                    create_pdf()
+                    main = False
+                    pygame.quit()
+                    sys.exit()
+                elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
                     clock.tick()
                     RT_correct = clock.get_rawtime()
                     RT_list_uncued_ink_correct.append(RT_correct)
@@ -755,7 +851,7 @@ def uncued_ink_trial(n):
             RT_correct = clock.get_rawtime()
             RT_list_uncued_ink_correct.append(RT_correct)
             print(f'this is RT for normal correct{RT_correct}')
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+        else:
             clock.tick()
             RT_wrong = clock.get_rawtime()
             RT_list_uncued_ink_wrong.append(RT_wrong)
@@ -817,54 +913,58 @@ def uncued_ink_block():
 def uncued_ink_exercise_trial(n):
     if n == 1:
         uncued_ink_blue()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
             main = True
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
+        else:
             pygame.mixer.Sound.play(error_sound)
     else:
         uncued_ink_yellow()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_ink = pygame.event.wait()
         if reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_x:
             main = True
-        else:  # reaction_ink.type == pygame.KEYDOWN and reaction_ink.key == pygame.K_y:
+        else:
             pygame.mixer.Sound.play(error_sound)
 
 
 def uncued_word_exercise_trial(n):
     if n == 1:
         uncued_word_blue()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
             main = True
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
+        else:
             pygame.mixer.Sound.play(error_sound)
     else:
         uncued_word_yellow()
-        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+        pygame.event.clear()
         reaction_word = pygame.event.wait()
         if reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_y:
             main = True
-        else:  # reaction_word.type == pygame.KEYDOWN and reaction_word.key == pygame.K_x:
+        else:
             pygame.mixer.Sound.play(error_sound)
 
 
@@ -899,111 +999,12 @@ def uncued_exercise_block():
     uncued_word_exercise_trial(2)
 
 
-def create_pdf():
-    df_cued = pd.DataFrame(
-        [RT_list_cued_ink_correct, RT_list_cued_ink_wrong,
-         RT_list_cued_word_correct,
-         RT_list_cued_word_wrong])
-    df_cued = df_cued.transpose()
-    median_row = df_cued.median(axis=0).round(2).fillna(0)
-    count_row = df_cued.count(axis=0).round(2).fillna(0)
-    sd_row = df_cued.std(axis=0).round(2).fillna(0)
-    min_row = df_cued.min(axis=0).round(2).fillna(0)
-    max_row = df_cued.max(axis=0).round(2).fillna(0)
-    columns = pd.Series([
-        'RZ Farbe Korrekt',
-        'RZ Farbe Fehler',
-        'RZ Lesen Korrekt',
-        'RZ Lesen Fehler'])
-    df_cued_stats = pd.concat(
-        [columns, count_row, median_row, sd_row, min_row, max_row],
-        axis=1, ignore_index=True)
-    df_cued_stats = df_cued_stats.transpose()
-    df_cued_stats.index = ['Statistik', 'Anzahl', 'Median',
-                           'SD', 'Minimum', 'Maximum']
-    cuedrecord = df_cued_stats.to_records()
-    df_uncued = pd.DataFrame(
-        [RT_list_uncued_ink_correct, RT_list_uncued_ink_wrong,
-         RT_list_uncued_word_correct,
-         RT_list_uncued_word_wrong])
-    df_uncued = df_uncued.transpose()
-    uncued_median_row = df_uncued.median(axis=0).round(2).fillna(0)
-    uncued_count_row = df_uncued.count(axis=0).round(2).fillna(0)
-    uncued_sd_row = df_uncued.std(axis=0).round(2).fillna(0)
-    uncued_min_row = df_uncued.min(axis=0).round(2).fillna(0)
-    uncued_max_row = df_uncued.max(axis=0).round(2).fillna(0)
-    uncued_columns = pd.Series([
-        'RZ Farbe Korrekt',
-        'RZ Farbe Fehler',
-        'RZ Lesen Korrekt',
-        'RZ Lesen Fehler'])
-    df_uncued_stats = pd.concat(
-        [uncued_columns, uncued_count_row, uncued_median_row, uncued_sd_row, uncued_min_row,
-         uncued_max_row],
-        axis=1, ignore_index=True)
-    df_uncued_stats = df_uncued_stats.transpose()
-    df_uncued_stats.index = ['Statistik', 'Anzahl', 'Median',
-                             'SD', 'Minimum', 'Maximum']
-    uncuedrecord = df_uncued_stats.to_records()
-    pdf = FPDF(orientation='P', unit='cm', format='A4')
-    pdf.add_page()
-    pdf.set_font("helvetica", "B", 18)
-    pdf.cell(19, 2, "Stroop Test Ergebnis", border=0,
-             align="C")
-    # Performing a line break:
-    pdf.ln(2)
-    pdf.set_font('helvetica', size=14, style='B')
-    pdf.cell(19.2, 2, text='Erster Test mit Cue', border=0, align='C')
-    pdf.ln(2)  ######
-    pdf.set_margins(left=1.9, right=1.9, top=2.9)
-    pdf.set_draw_color(0, 0, 0)
-    pdf.set_line_width(0.05)
-    pdf.set_font('helvetica', size=12)
-    with pdf.table(
-            borders_layout="ALL",
-            cell_fill_color=(224, 235, 255),
-            cell_fill_mode=TableCellFillMode.ROWS,
-            col_widths=(30, 30, 30, 30, 30),
-            line_height=2.5 * pdf.font_size,
-            text_align="CENTER",
-            width=13.4,
-            first_row_as_headings=False
-    ) as table:
-        for data_row in cuedrecord:
-            row = table.row()
-            for datum in data_row:
-                text = str(datum).encode('utf-8').decode(
-                    'latin-1')
-                row.cell(text)
-    pdf.ln(2)
-    pdf.set_font('helvetica', size=14, style='B')
-    pdf.cell(17.5, 2, text='Zweiter Test ohne Cue',
-             border=0, align='C')
-    pdf.ln(2)
-    pdf.set_font('helvetica', size=12)
-    with pdf.table(
-            borders_layout="ALL",
-            cell_fill_color=(224, 235, 255),
-            cell_fill_mode=TableCellFillMode.ROWS,
-            col_widths=(30, 30, 30, 30, 30),
-            line_height=2.5 * pdf.font_size,
-            text_align="CENTER",
-            width=13.4,
-            first_row_as_headings=False
-    ) as table:
-        for data_row in uncuedrecord:
-            row = table.row()
-            for datum in data_row:
-                text = str(datum).encode('utf-8').decode(
-                    'latin-1')
-                row.cell(text)
-    pdf.output('Stroop_Cue_Zuerst_PDF')
+
 
 
 '''
 Main Loop
 '''
-# put game loop here
 
 while main:
     current_time = pygame.time.get_ticks()
@@ -1017,101 +1018,104 @@ while main:
                                   pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,pygame.WINDOWFOCUSGAINED,
                                   pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
         if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+            create_pdf()
             main = False
             pygame.quit()
             sys.exit()
         elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
             screen.fill(pygame.Color("gray40"))
-            screen.blit(textInstructions5, (200, 150))
-            screen.blit(textInstructions6, (200, 200))
-            #screen.blit(textInstructions1, (370, 200))
-            #screen.blit(textInstructions21, (390, 250))
-            #screen.blit(textInstructions22, (440, 300))
-            pygame.display.flip()  # always use after showing sth new on screen!!!
+            screen.blit(textInstructions1, (200, 150))
+            screen.blit(textInstructions2, (200, 200))
+            pygame.display.flip()
             pygame.event.pump()
             pygame.event.clear()
             pygame.time.delay(300)
             screen.blit(textweiter, (420, 800))
-            pygame.display.flip()  # always use after showing sth new on screen!!!
+            pygame.display.flip()
             pygame.event.pump()
-            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+            pygame.event.clear()
             instruct1_event = pygame.event.wait()
             if instruct1_event.type == pygame.KEYDOWN and instruct1_event.key == pygame.K_ESCAPE:
+                create_pdf()
                 main = False
                 pygame.quit()
                 sys.exit()
             elif instruct1_event.type == pygame.KEYDOWN and instruct1_event.key == pygame.K_SPACE:
                 screen.blit(textInstructions3, (620, 350))
-                pygame.display.flip()  # always use after showing sth new on screen!!!
+                pygame.display.flip()
                 pygame.event.pump()
                 pygame.event.clear()
                 pygame.time.delay(200)
                 screen.blit(textweiter, (420, 800))
-                pygame.display.flip()  # always use after showing sth new on screen!!!
+                pygame.display.flip()
                 pygame.event.pump()
-                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                pygame.event.clear()
                 instruct2_event = pygame.event.wait()
                 if instruct2_event.type == pygame.KEYDOWN and instruct2_event.key == pygame.K_ESCAPE:
+                    create_pdf()
                     main = False
                     pygame.quit()
                     sys.exit()
                 elif instruct2_event.type == pygame.KEYDOWN and instruct2_event.key == pygame.K_SPACE:
                     screen.blit(textG, (640, 400))
-                    pygame.display.flip()  # always use after showing sth new on screen!!!
+                    pygame.display.flip()
                     pygame.event.pump()
                     pygame.event.clear()
                     pygame.time.delay(200)
                     screen.blit(textweiter, (420, 800))
-                    pygame.display.flip()  # always use after showing sth new on screen!!!
+                    pygame.display.flip()
                     pygame.event.pump()
-                    pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                    pygame.event.clear()
                     instruct3_event = pygame.event.wait()
                     if instruct3_event.type == pygame.KEYDOWN and instruct3_event.key == pygame.K_ESCAPE:
+                        create_pdf()
                         main = False
                         pygame.quit()
                         sys.exit()
                     elif instruct3_event.type == pygame.KEYDOWN and instruct3_event.key == pygame.K_SPACE:
                         screen.fill(pygame.Color("gray40"))
-                        screen.blit(textInstructions5, (200, 150))
-                        screen.blit(textInstructions6, (200, 200))
-                        screen.blit(textInstructions7, (200, 250))
-                        screen.blit(textInstructions8, (200, 300))
-                        screen.blit(textInstructions9, (200, 350))
+                        screen.blit(textInstructions1, (200, 150))
+                        screen.blit(textInstructions2, (200, 200))
+                        screen.blit(textInstructions4, (200, 250))
+                        screen.blit(textInstructions5, (200, 300))
+                        screen.blit(textInstructions6, (200, 350))
                         screen.blit(textG, (640, 400))
-                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                        pygame.display.flip()
                         pygame.event.pump()
                         pygame.event.clear()
                         pygame.time.delay(200)
                         screen.blit(textweiter, (420, 800))
-                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                        pygame.display.flip()
                         pygame.event.pump()
-                        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                        pygame.event.clear()
                         instruct4_event = pygame.event.wait()
                         if instruct4_event.type == pygame.KEYDOWN and instruct4_event.key == pygame.K_ESCAPE:
+                            create_pdf()
                             main = False
                             pygame.quit()
                             sys.exit()
                         elif instruct4_event.type == pygame.KEYDOWN and instruct4_event.key == pygame.K_SPACE:
                             screen.fill(pygame.Color("gray40"))
-                            screen.blit(textInstructions10, (200, 150))
-                            screen.blit(textInstructions11, (200, 200))
-                            screen.blit(textInstructions12, (200, 250))
-                            screen.blit(textInstructions13, (200, 300))
-                            screen.blit(textInstructions14, (200, 400))
-                            pygame.display.flip()  # always use after showing sth new on screen!!!
+                            screen.blit(textInstructions7, (200, 150))
+                            screen.blit(textInstructions8, (200, 200))
+                            screen.blit(textInstructions9, (200, 250))
+                            screen.blit(textInstructions10, (200, 300))
+                            screen.blit(textInstructions11, (200, 400))
+                            pygame.display.flip()
                             pygame.event.pump()
                             pygame.time.delay(200)
                             screen.blit(textexercise, (380, 800))
-                            pygame.display.flip()  # always use after showing sth new on screen!!!
+                            pygame.display.flip()
                             pygame.event.pump()
                             pygame.event.clear()
                             exercise_event = pygame.event.wait()
                             if exercise_event.type == pygame.KEYDOWN and exercise_event.key == pygame.K_ESCAPE:
+                                create_pdf()
                                 main = False
                                 pygame.quit()
                                 sys.exit()
                             elif exercise_event.type == pygame.KEYDOWN and exercise_event.key == pygame.K_SPACE:
-                                #exercise_block()
+                                #cued_exercise_block()
                                 screen.fill(pygame.Color("gray40"))
                                 screen.blit(textTask1, (280, 850))
                                 pygame.display.flip()
@@ -1120,14 +1124,15 @@ while main:
                                 pygame.event.clear()
                                 first_test_event = pygame.event.wait()
                                 if first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_ESCAPE:
+                                    create_pdf()
                                     main = False
                                     pygame.quit()
                                     sys.exit()
                                 elif first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_SPACE:
                                     # task1 cued version
-                                    cued_ink_block()
-                                    switch()
-                                    cued_word_block()
+                                    #cued_ink_block()
+                                    #switch()
+                                    #cued_word_block()
                                     #switch()
                                     #cued_ink_block()
                                     #switch()
@@ -1145,6 +1150,7 @@ while main:
                                     pygame.event.clear()
                                     second_test_event = pygame.event.wait()
                                     if second_test_event.type == pygame.KEYDOWN and second_test_event.key == pygame.K_ESCAPE:
+                                        create_pdf()
                                         main = False
                                         pygame.quit()
                                         sys.exit()
@@ -1152,46 +1158,49 @@ while main:
                                         screen.fill(pygame.Color("gray40"))
                                         screen.blit(textInstruct_uncued1, (200, 150))
                                         screen.blit(textInstruct_uncued2, (200, 200))
-                                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                                        pygame.display.flip()
                                         pygame.event.pump()
                                         pygame.event.clear()
                                         pygame.time.delay(300)
                                         screen.blit(textweiter, (420, 800))
-                                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                                        pygame.display.flip()
                                         pygame.event.pump()
-                                        pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                                        pygame.event.clear()
                                         uncued_instruct1_event = pygame.event.wait()
                                         if uncued_instruct1_event.type == pygame.KEYDOWN and uncued_instruct1_event.key == pygame.K_ESCAPE:
+                                            create_pdf()
                                             main = False
                                             pygame.quit()
                                             sys.exit()
                                         elif uncued_instruct1_event.type == pygame.KEYDOWN and uncued_instruct1_event.key == pygame.K_SPACE:
                                             screen.blit(textInstructions3, (620, 350))
-                                            pygame.display.flip()  # always use after showing sth new on screen!!!
+                                            pygame.display.flip()
                                             pygame.event.pump()
                                             pygame.event.clear()
                                             pygame.time.delay(200)
                                             screen.blit(textweiter, (420, 800))
-                                            pygame.display.flip()  # always use after showing sth new on screen!!!
+                                            pygame.display.flip()
                                             pygame.event.pump()
-                                            pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                                            pygame.event.clear()
                                             uncued_instruct2_event = pygame.event.wait()
                                             if uncued_instruct2_event.type == pygame.KEYDOWN and uncued_instruct2_event.key == pygame.K_ESCAPE:
+                                                create_pdf()
                                                 main = False
                                                 pygame.quit()
                                                 sys.exit()
                                             elif uncued_instruct2_event.type == pygame.KEYDOWN and uncued_instruct2_event.key == pygame.K_SPACE:
                                                 screen.blit(textG, (640, 400))
-                                                pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                pygame.display.flip()
                                                 pygame.event.pump()
                                                 pygame.event.clear()
                                                 pygame.time.delay(200)
                                                 screen.blit(textweiter, (420, 800))
-                                                pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                pygame.display.flip()
                                                 pygame.event.pump()
-                                                pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                                                pygame.event.clear()
                                                 uncued_instruct3_event = pygame.event.wait()
                                                 if uncued_instruct3_event.type == pygame.KEYDOWN and uncued_instruct3_event.key == pygame.K_ESCAPE:
+                                                    create_pdf()
                                                     main = False
                                                     pygame.quit()
                                                     sys.exit()
@@ -1201,16 +1210,17 @@ while main:
                                                     screen.blit(textInstruct_uncued4, (200, 200))
                                                     screen.blit(textInstruct_uncued5, (200, 250))
                                                     screen.blit(textG, (640, 400))
-                                                    pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                    pygame.display.flip()
                                                     pygame.event.pump()
                                                     pygame.event.clear()
                                                     pygame.time.delay(200)
                                                     screen.blit(textweiter, (420, 800))
-                                                    pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                    pygame.display.flip()
                                                     pygame.event.pump()
-                                                    pygame.event.clear()  # use this and next line to wait for an event such as keypress!!!!
+                                                    pygame.event.clear()
                                                     uncued_instruct4_event = pygame.event.wait()
                                                     if uncued_instruct4_event.type == pygame.KEYDOWN and uncued_instruct4_event.key == pygame.K_ESCAPE:
+                                                        create_pdf()
                                                         main = False
                                                         pygame.quit()
                                                         sys.exit()
@@ -1219,15 +1229,16 @@ while main:
                                                         screen.blit(textInstruct_uncued6, (200, 150))
                                                         screen.blit(textInstruct_uncued7, (200, 200))
                                                         screen.blit(textInstruct_uncued8, (200, 250))
-                                                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                        pygame.display.flip()
                                                         pygame.event.pump()
                                                         pygame.time.delay(200)
                                                         screen.blit(textexercise, (380, 800))
-                                                        pygame.display.flip()  # always use after showing sth new on screen!!!
+                                                        pygame.display.flip()
                                                         pygame.event.pump()
                                                         pygame.event.clear()
                                                         uncued_exercise_event = pygame.event.wait()
                                                         if uncued_exercise_event.type == pygame.KEYDOWN and uncued_exercise_event.key == pygame.K_ESCAPE:
+                                                            create_pdf()
                                                             main = False
                                                             pygame.quit()
                                                             sys.exit()
@@ -1241,6 +1252,7 @@ while main:
                                                             pygame.event.clear()
                                                             uncued_first_test_event = pygame.event.wait()
                                                             if uncued_first_test_event.type == pygame.KEYDOWN and uncued_first_test_event.key == pygame.K_ESCAPE:
+                                                                create_pdf()
                                                                 main = False
                                                                 pygame.quit()
                                                                 sys.exit()
@@ -1261,3 +1273,4 @@ while main:
                                                                 create_pdf()
                                                                 pygame.quit()
                                                                 sys.exit()
+
