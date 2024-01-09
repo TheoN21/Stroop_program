@@ -32,7 +32,7 @@ from fpdf.enums import TableCellFillMode
 # To dos:
 
 
-
+#HOW can the variable main be set to false so that it breaks out of the while loop but the rest of the code keeps running???????????????????????????
 
 # 1. fix full-screen mode
 
@@ -93,9 +93,10 @@ text_end_second_test2 = fontsmall.render('Das Programm wird in 10 Sekunden beend
 
 textInstructionscontrol1 = fontsmall.render("Im Folgenden sehen Sie die Farbwörter blau und gelb in weiß geschrieben.", True, (255, 255, 255))
 textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die entsprechende Taste drücken.", True, (255, 255, 255))
-textInstructionscontrol3 = fontsmall.render("Nach einer eine Weile erscheint das Wort „Wechsel“ und Sie sehen anschließendein ein", True, (255, 255, 255))
-textInstructionscontrol4 = fontsmall.render("Rechteck entweder in blau oder gelb. Sie sollen dann die entsprechende Taste drücken.", True, (255, 255, 255))
-textInstructionscontrol5 = fontsmall.render("Bei Fehlern ertönt ein Warnton. Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
+textInstructionscontrol3 = fontsmall.render("Nach einer eine Weile erscheint das Wort „Wechsel“ und Sie sehen anschließend ein", True, (255, 255, 255))
+textInstructionscontrol4 = fontsmall.render("Rechteck entweder in blau oder gelb. Sie sollen dann so schnell wie möglich die ", True, (255, 255, 255))
+textInstructionscontrol5 = fontsmall.render("blaue oder gelbe Taste drücken. Bei Fehlern ertönt ein Warnton.", True, (255, 255, 255))
+textInstructionscontrol6 = fontsmall.render("Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
 
 textInstructions1 = fontsmall.render("Im Folgenden sehen Sie Farbwörter in blau und gelb geschrieben. Dabei sind", True, (255, 255, 255))
 textInstructions2 = fontsmall.render("Farbe und Farbwort stets verschieden.", True, (255, 255, 255))
@@ -284,7 +285,25 @@ def create_pdf():
     pdf.ln(12.5)
     pdf.cell( 1.5,0.5,'Seite %s' % pdf.page_no(), 0, new_x='CENTER', new_y='LAST', center=True)
     pdf.output('Stroop_Cue_Zuerst_PDF')
-
+    print(RT_list_control_read_correct)
+    print(RT_list_control_read_wrong)
+    print(RT_list_control_color_correct)
+    print(RT_list_control_color_wrong)
+    print(controlrecord)
+    listcuedinkcorrect = print(RT_list_cued_ink_correct)
+    listcuedinkwrong = print(RT_list_cued_ink_wrong)
+    listuncuedinkcorrect = print(RT_list_uncued_ink_correct)
+    listuncuedinkwrong = print(RT_list_uncued_ink_wrong)
+    listcuedwordcorrect = print(RT_list_cued_word_correct)
+    listcuedwordwrong = print(RT_list_cued_word_wrong)
+    listuncuedwordcorrect = print(RT_list_uncued_word_correct)
+    listuncuedwordwrong = print(RT_list_uncued_word_wrong)
+    cuedrecordsave = print(cuedrecord)
+    uncuedrecordsave = print(uncuedrecord)
+    dfcuedsave = print(df_cued)
+    dfuncuedsave = print(df_uncued)
+    dfcuedsstatsave = print(df_cued_stats)
+    dfcuedstatssave = print(df_uncued_stats)
 
 def blank_screen():
     screen.fill(pygame.Color("gray40"))
@@ -1612,7 +1631,7 @@ while main:
             screen.blit(textInstructionscontrol1, (210*scale_x, 200*scale_y))
             pygame.display.flip()
             pygame.event.pump()
-            pygame.event.clear()
+            pygame.event.clear()#######################
             pygame.time.delay(200)
             screen.blit(textweiter, (420*scale_x, 800*scale_y))
             pygame.display.flip()
@@ -1628,7 +1647,7 @@ while main:
                 screen.blit(textInstructions3, (615*scale_x, 350*scale_y))
                 pygame.display.flip()
                 pygame.event.pump()
-                pygame.event.clear()
+                pygame.event.clear()###################
                 pygame.time.delay(200)
                 pygame.display.flip()
                 pygame.event.pump()
@@ -1643,7 +1662,7 @@ while main:
                     screen.blit(textcontrolG, (640*scale_x, 400*scale_y))
                     pygame.display.flip()
                     pygame.event.pump()
-                    pygame.event.clear()
+                    pygame.event.clear()###############################################################################################################
                     pygame.time.delay(200)
                     pygame.display.flip()
                     pygame.event.pump()
@@ -1660,6 +1679,7 @@ while main:
                         screen.blit(textInstructionscontrol3, (150 * scale_x, 250 * scale_y))
                         screen.blit(textInstructionscontrol4, (150 * scale_x, 300 * scale_y))
                         screen.blit(textInstructionscontrol5, (150 * scale_x, 350 * scale_y))
+                        screen.blit(textInstructionscontrol6, (150 * scale_x, 400 * scale_y))
                         pygame.display.flip()
                         pygame.event.pump()
                         pygame.event.clear()
@@ -1972,4 +1992,6 @@ while main:
                                                                                         pygame.time.delay(10000)
                                                                                         pygame.quit()
                                                                                         sys.exit()
+
+
 
