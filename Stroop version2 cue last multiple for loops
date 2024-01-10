@@ -103,7 +103,7 @@ textB = font.render('BLAU', True, 'yellow1')
 textG = font.render('GELB', True, 'mediumblue')
 textcontrolB = font.render('BLAU', True, (255, 255, 255))
 textcontrolG = font.render('GELB', True, (255, 255, 255))
-textInk = font.render('SCHRIFTFARBE', True, (255, 255, 255))
+textInk = font.render('FARBE', True, (255, 255, 255))
 textWord = font.render('LESEN', True, (255, 255, 255))
 textSwitch = font.render('WECHSEL', True, (255, 255, 255))
 textNoncue = font.render('BEREIT', True, (255, 255, 255))
@@ -119,11 +119,10 @@ pygame.init()
 pygame.display.set_caption("Stroop Test")
 desk_info = pygame.display.Info()
 screen = pygame.display.set_mode((desk_info.current_w, desk_info.current_h), pygame.NOFRAME, pygame.SCALED)
-scale_x = 1 #1920/1463 ########################################################################################################################
-scale_y = 1 #1200/914
+scale_x = 1
+scale_y = 1
 
-# anderer laptop 1920x1200
-# mein laptop 1463x914
+
 pygame.event.set_blocked([pygame.MOUSEBUTTONDOWN,pygame.MOUSEBUTTONUP,pygame.MOUSEMOTION, pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,pygame.WINDOWFOCUSGAINED,pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
 
 '''
@@ -276,6 +275,10 @@ def blank_screen():
     pygame.display.update()
     pygame.time.delay(1500)
 
+def shorter_blank_screen():
+    screen.fill(pygame.Color("gray40"))
+    pygame.display.update()
+    pygame.time.delay(1300)
 
 def test_wait():
     screen.fill(pygame.Color("gray40"))
@@ -291,11 +294,7 @@ def test_wait():
 
 def control_read_blue():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textNoncue, (610 * scale_x, 300 * scale_y))
-    pygame.display.flip()
-    pygame.event.pump()
-    pygame.time.delay(1000)
-    screen.fill(pygame.Color("gray40"))
+    pygame.time.delay(200)
     screen.blit(textcontrolB, (640 * scale_x, 300 * scale_y))
     pygame.display.flip()
     pygame.event.pump()
@@ -303,11 +302,7 @@ def control_read_blue():
 
 def control_read_yellow():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textNoncue, (610*scale_x, 300*scale_y))
-    pygame.display.flip()
-    pygame.event.pump()
-    pygame.time.delay(1000)
-    screen.fill(pygame.Color("gray40"))
+    pygame.time.delay(200)
     screen.blit(textcontrolG, (640*scale_x, 300*scale_y))
     pygame.display.flip()
     pygame.event.pump()
@@ -425,31 +420,31 @@ def control_read_block():
     n = x[0]
     control_read_trial(n)
     n = x[1]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[2]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[3]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[4]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[5]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[6]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[7]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[8]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
     n = x[9]
-    blank_screen()
+    shorter_blank_screen()
     control_read_trial(n)
 
 
@@ -489,11 +484,7 @@ def control_read_exercise_trial(n):
 
 def control_color_blue():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textNoncue, (610 * scale_x, 300 * scale_y))
-    pygame.display.flip()
-    pygame.event.pump()
-    pygame.time.delay(1000)
-    screen.fill(pygame.Color("gray40"))
+    pygame.time.delay(200)
     pygame.draw.rect(screen, BLUE, pygame.Rect(625, 300, 225, 85))
     pygame.display.flip()
     pygame.event.pump()
@@ -501,11 +492,7 @@ def control_color_blue():
 
 def control_color_yellow():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textNoncue, (610*scale_x, 300*scale_y))
-    pygame.display.flip()
-    pygame.event.pump()
-    pygame.time.delay(1000)
-    screen.fill(pygame.Color("gray40"))
+    pygame.time.delay(200)
     pygame.draw.rect(screen, YELLOW, pygame.Rect(625, 300, 225, 85))
     pygame.display.flip()
     pygame.event.pump()
@@ -623,31 +610,31 @@ def control_color_block():
     n = x[0]
     control_color_trial(n)
     n = x[1]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[2]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[3]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[4]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[5]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[6]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[7]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[8]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
     n = x[9]
-    blank_screen()
+    shorter_blank_screen()
     control_color_trial(n)
 
 
@@ -687,24 +674,24 @@ def control_color_exercise_trial(n):
 
 def control_exercise_block():
     control_read_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_read_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_read_exercise_trial(2)
-    blank_screen()
+    shorter_blank_screen()
     control_read_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_read_exercise_trial(2)
-    blank_screen()
+    shorter_blank_screen()
     switch()
     control_color_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_color_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_color_exercise_trial(2)
-    blank_screen()
+    shorter_blank_screen()
     control_color_exercise_trial(1)
-    blank_screen()
+    shorter_blank_screen()
     control_color_exercise_trial(2)
 #-------------------------------------------------- Cued test -----------------------------------------------
 
@@ -840,7 +827,7 @@ def cued_word_trial(n):
 
 def cued_ink_blue():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textInk, (450*scale_x, 300*scale_y))
+    screen.blit(textInk, (620*scale_x, 300*scale_y))
     pygame.display.flip()
     pygame.event.pump()
     pygame.time.delay(1000)
@@ -853,7 +840,7 @@ def cued_ink_blue():
 
 def cued_ink_yellow():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textInk, (450*scale_x, 300*scale_y))
+    screen.blit(textInk, (620*scale_x, 300*scale_y))
     pygame.display.flip()
     pygame.event.pump()
     pygame.time.delay(1000)
@@ -1526,7 +1513,7 @@ def uncued_word_exercise_trial(n):
 
 def ink():
     screen.fill(pygame.Color("gray40"))
-    screen.blit(textInk, (450*scale_x, 300*scale_y))
+    screen.blit(textInk, (620*scale_x, 300*scale_y))
     pygame.display.flip()
     pygame.event.pump()
     pygame.time.delay(2000)
@@ -1683,7 +1670,7 @@ def controltest():
                                             pygame.quit()
                                             sys.exit()
                                         elif exercisecontrol_event.type == pygame.KEYDOWN and exercisecontrol_event.key == pygame.K_SPACE:
-                                            #control_exercise_block()
+                                            control_exercise_block()
                                             screen.fill(pygame.Color("gray40"))
                                             screen.blit(textcontrolstart, (260 * scale_x, 850 * scale_y))
                                             pygame.display.flip()
@@ -1698,10 +1685,10 @@ def controltest():
                                                 sys.exit()
                                             elif controltest_event.type == pygame.KEYDOWN and controltest_event.key == pygame.K_SPACE:
                                                 # task0 Control Test
-                                                #control_read_block()
-                                                #blank_screen()
+                                                control_read_block()
+                                                blank_screen()
                                                 switch()
-                                                #control_color_block()
+                                                control_color_block()
                                                 pygame.time.delay(200)
                                                 screen.fill(pygame.Color("gray40"))
                                                 screen.blit(text_end_control, (520 * scale_x, 300 * scale_y))
@@ -1811,7 +1798,7 @@ def cuedtest():
                                     pygame.quit()
                                     sys.exit()
                                 elif exercise_event.type == pygame.KEYDOWN and exercise_event.key == pygame.K_SPACE:
-                                    #cued_exercise_block()
+                                    cued_exercise_block()
                                     screen.fill(pygame.Color("gray40"))
                                     screen.blit(textTask2Start, (260 * scale_x, 850 * scale_y))
                                     pygame.display.flip()
@@ -1826,16 +1813,16 @@ def cuedtest():
                                         sys.exit()
                                     elif first_test_event.type == pygame.KEYDOWN and first_test_event.key == pygame.K_SPACE:
                                         # task1 cued version
-                                        #cued_ink_block()
-                                        #blank_screen()
-                                        #switch()
-                                        #cued_word_block()
+                                        cued_ink_block()
                                         blank_screen()
                                         switch()
-                                        #cued_ink_block()
-                                        #blank_screen()
-                                        #switch()
-                                        #cued_word_block()
+                                        cued_word_block()
+                                        blank_screen()
+                                        switch()
+                                        cued_ink_block()
+                                        blank_screen()
+                                        switch()
+                                        cued_word_block()
                                         create_pdf()
                                         screen.fill(pygame.Color("gray40"))
                                         screen.blit(text_end_second_test1,
@@ -1954,7 +1941,7 @@ def uncuedtest():
                                     pygame.quit()
                                     sys.exit()
                                 elif uncued_exercise_event.type == pygame.KEYDOWN and uncued_exercise_event.key == pygame.K_SPACE:
-                                    #uncued_exercise_block()
+                                    uncued_exercise_block()
                                     screen.fill(pygame.Color("gray40"))
                                     screen.blit(textTask1Start, (260 * scale_x, 850 * scale_y))
                                     pygame.display.flip()
@@ -1970,16 +1957,16 @@ def uncuedtest():
                                     elif uncued_first_test_event.type == pygame.KEYDOWN and uncued_first_test_event.key == pygame.K_SPACE:
                                         # task2 uncued version
                                         ink()
-                                        #uncued_ink_block()
-                                        #blank_screen()
-                                        #word()
-                                        #uncued_word_block()
-                                        #blank_screen()
-                                        #ink()
-                                        #uncued_ink_block()
-                                        #blank_screen()
-                                        #word()
-                                        #uncued_word_block()
+                                        uncued_ink_block()
+                                        blank_screen()
+                                        word()
+                                        uncued_word_block()
+                                        blank_screen()
+                                        ink()
+                                        uncued_ink_block()
+                                        blank_screen()
+                                        word()
+                                        uncued_word_block()
                                         pygame.time.delay(200)
                                         screen.fill(pygame.Color("gray40"))
                                         screen.blit(text_end_first_test, (520 * scale_x, 300 * scale_y))
@@ -2003,3 +1990,6 @@ while main:
             uncuedtest()
         else:
             cuedtest()
+
+
+
