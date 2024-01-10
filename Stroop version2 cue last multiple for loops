@@ -1697,7 +1697,7 @@ def controltest():
                                                 pygame.time.delay(1000)
                                                 main = False
 
-
+#---------------------------------- Loops ---------------------------------------------------------------------
 
 def cuedtest():
     main = True
