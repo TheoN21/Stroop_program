@@ -55,7 +55,13 @@ pygame.font.init()
 font = pygame.font.SysFont('verdana.ttf', 100)
 fontsmall = pygame.font.SysFont('verdana.ttf', 40)
 
+textfirstscreen0 = fontsmall.render('Bei den folgenden Aufgaben geht es um die Farben Blau und Gelb.', True, (255, 255, 255))
+textfirstscreen1 = fontsmall.render('Vor jeder Aufgabe erhalten Sie eine genaue Erklärung und einige', True, (255, 255, 255))
+textfirstscreen2 = fontsmall.render('Beispielaufgaben zum Üben.', True, (255, 255, 255))
+
 textStart = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung zu kommen.', True, (255, 255, 255))
+
+
 textcontrolstart = fontsmall.render('Drücken Sie bitte die Leertaste um den ersten Teil des Tests zu starten.', True,(255, 255, 255))
 textTask1Instructions = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung des zweiten Teil des Tests zu kommen.', True, (255, 255, 255))
 textTask1Start = fontsmall.render('Drücken Sie bitte die Leertaste um den zweiten Teil des Tests zu starten.', True,(255, 255, 255))
@@ -73,7 +79,7 @@ text_end_second_test1 = fontsmall.render('Ende des Tests. Das PDF mit den Ergebn
 text_end_second_test2 = fontsmall.render('Das Programm wird in 10 Sekunden beendet.', True, (255, 255, 255))
 
 textInstructionscontrol1 = fontsmall.render("Im Folgenden sehen Sie die Farbwörter blau und gelb in weiß geschrieben.",True, (255, 255, 255))
-textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die entsprechende", True, (255, 255, 255))
+textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die passende", True, (255, 255, 255))
 textInstructionscontrol3 = fontsmall.render("Taste drücken. Nach einer Weile erscheint das Wort „Wechsel“ und Sie sehen", True, (255, 255, 255))
 textInstructionscontrol4 = fontsmall.render("anschließend ein Rechteck entweder in blau oder gelb.", True, (255, 255, 255))
 textInstructionscontrol5 = fontsmall.render("Sie sollen dann so schnell wie möglich die blaue oder gelbe Taste drücken.", True,(255, 255, 255))
@@ -1562,7 +1568,12 @@ def controltest():
     main = True
     while main:
         screen.fill(pygame.Color("gray40"))
-        screen.blit(textStart, (310 * scale_x, 300 * scale_y))
+        screen.blit(textfirstscreen0, (240 * scale_x, 200 * scale_y))
+        screen.blit(textfirstscreen1, (240 * scale_x, 250 * scale_y))
+        screen.blit(textfirstscreen2, (240 * scale_x, 300 * scale_y))
+        pygame.draw.rect(screen, YELLOW, pygame.Rect(300 * scale_x, 500 * scale_y, 225, 90))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(900 * scale_x, 500 * scale_y, 225, 90))
+        screen.blit(textStart, (310 * scale_x, 800 * scale_y))
         pygame.display.update()
         pygame.event.pump()
         events = pygame.event.get()
@@ -1955,12 +1966,15 @@ def uncuedtest():
                                         ink()
                                         uncued_ink_block()
                                         blank_screen()
+                                        switch()
                                         word()
                                         uncued_word_block()
                                         blank_screen()
+                                        switch()
                                         ink()
                                         uncued_ink_block()
                                         blank_screen()
+                                        switch()
                                         word()
                                         uncued_word_block()
                                         create_pdf()
@@ -1989,5 +2003,6 @@ while main:
             cuedtest()
         else:
             uncuedtest()
+
 
 
