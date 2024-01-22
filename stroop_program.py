@@ -8,7 +8,6 @@ Sound downloaded from mixkit.co, file name mixkit-game-show-wrong-answer-buzz-95
 """
 Requirements
 Python                    3.11.4
-fonttools                 4.46.0
 fpdf2                     2.7.7
 numpy                     1.26.2
 pandas                    2.1.3
