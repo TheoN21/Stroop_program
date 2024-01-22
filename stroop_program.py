@@ -8,7 +8,6 @@ Sound downloaded from mixkit.co, file name mixkit-game-show-wrong-answer-buzz-95
 """
 Requirements
 Python                    3.11.4
-cx-Freeze                 6.15.12
 fonttools                 4.46.0
 fpdf2                     2.7.7
 numpy                     1.26.2
@@ -18,7 +17,6 @@ pygame                    2.5.2
 
 import pygame
 import sys
-import os
 import numpy as np
 import pandas as pd
 from fpdf import FPDF
