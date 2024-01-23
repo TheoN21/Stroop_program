@@ -15,6 +15,7 @@ pygame                    2.5.2
 """
 
 import pygame
+import easygui as eas
 import sys
 import numpy as np
 import pandas as pd
@@ -112,6 +113,10 @@ textWord = font.render('LESEN', True, (255, 255, 255))
 textSwitch = font.render('WECHSEL', True, (255, 255, 255))
 textNoncue = font.render('BEREIT', True, (255, 255, 255))
 
+entry_text = 'Bitte geben Sie die folgenden Daten ein:'
+entry_title = 'Patientendaten'
+entry_input_list = ['Testdatum', 'Vollständiger Name', 'Geburtsdatum', 'Geschlecht', 'Probandengruppe']
+
 # Sound effects
 pygame.mixer.init()
 error_sound = pygame.mixer.Sound("error_sound.ogg")
@@ -190,15 +195,28 @@ def create_pdf():
     df_control_stats.index = ['Statistik', 'Anzahl', 'Median',
                               'SD', 'Minimum', 'Maximum']
     controlrecord = df_control_stats.to_records()
+
     pdf = FPDF(orientation='P', unit='cm', format='A4')
     pdf.add_page()
     pdf.set_font("helvetica", "B", 18)
     pdf.cell(19, 2, "Stroop Test cue zuerst Ergebnis", border=0,
              align="C")
-    pdf.ln(2)
-    pdf.set_font('helvetica', size=14, style='B')
+    pdf.ln(1)
+    pdf.set_font('helvetica', 'B', 11)
+    testdate, name, birthdate, sex, expgroup = entrybox
+    pdf.cell(19.2, 2, text=f'Testdatum: {testdate}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Probandenname: {name}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Geburtsdatum: {birthdate}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Geschlecht: {sex}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Probandengruppe: {expgroup}', border=0, align='L')
+    pdf.ln(1.5)
+    pdf.set_font('helvetica', style='B', size=14)
     pdf.cell(19.2, 2, text='Erster Test mit Cue', border=0, align='C')
-    pdf.ln(2)
+    pdf.ln(1.8)
     pdf.set_margins(left=1.9, right=1.9, top=2.9)
     pdf.set_draw_color(0, 0, 0)
     pdf.set_line_width(0.05)
@@ -218,11 +236,11 @@ def create_pdf():
             for datum in data_row:
                 text = str(datum).encode('utf-8').decode('latin-1')
                 row.cell(text)
-    pdf.ln(2)
+    pdf.ln(1.5)
     pdf.set_font('helvetica', size=14, style='B')
     pdf.cell(17.5, 2, text='Zweiter Test ohne Cue',
              border=0, align='C')
-    pdf.ln(2)
+    pdf.ln(1.8)
     pdf.set_font('helvetica', size=12)
     with pdf.table(
             borders_layout="ALL",
@@ -240,13 +258,25 @@ def create_pdf():
                 text = str(datum).encode('utf-8').decode('latin-1')
                 row.cell(text)
     pdf.set_font('helvetica', 'I', size=10)
-    pdf.ln(3)
+    pdf.ln(1)
     pdf.cell(1.5, 0.5, 'Seite %s' % pdf.page_no(), 0, new_x='CENTER', new_y='LAST', center=True)
     pdf.add_page()
     pdf.set_font("helvetica", "B", 18)
-    pdf.cell(17, 2, "Stroop Test Ergebnis", border=0,
+    pdf.cell(17, 2, "Stroop Test cue zuerst Ergebnis", border=0,
              align="C")
-    pdf.ln(2)
+    pdf.ln(1.5)
+    pdf.set_font('helvetica', 'B', 11)
+    testdate, name, birthdate, sex, expgroup = entrybox
+    pdf.cell(19.2, 2, text=f'Testdatum: {testdate}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Probandenname: {name}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Geburtsdatum: {birthdate}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Geschlecht: {sex}', border=0, align='L')
+    pdf.ln(0.5)
+    pdf.cell(19.2, 2, text=f'Probandengruppe: {expgroup}', border=0, align='L')
+    pdf.ln(1.5)
     pdf.set_font('helvetica', size=14, style='B')
     pdf.cell(17, 2, text='Kontrolltest', border=0, align='C')
     pdf.ln(2)
@@ -270,7 +300,7 @@ def create_pdf():
                 text = str(datum).encode('utf-8').decode('latin-1')
                 row.cell(text)
     pdf.set_font('helvetica', 'I', size=10)
-    pdf.ln(12.5)
+    pdf.ln(9.7)
     pdf.cell(1.5, 0.5, 'Seite %s' % pdf.page_no(), 0, new_x='CENTER', new_y='LAST', center=True)
     pdf.output('Stroop_Cue_Zuerst_PDF')
 
@@ -1986,7 +2016,7 @@ def uncuedtest():
                                         pygame.quit()
                                         sys.exit()
 
-testorder = ['controltest', 'cuedtest', 'uncuedtest']
+testorder = ['gui_input','controltest', 'cuedtest', 'uncuedtest']
 
 '''
 Main Loop
@@ -1994,7 +2024,9 @@ Main Loop
 
 while main:
     for test in testorder:
-        if test == 'controltest':
+        if test == 'gui_input':
+            entrybox = eas.multenterbox(entry_text, entry_title, entry_input_list)
+        elif test == 'controltest':
             controltest()
         elif test == 'cuedtest':
             cuedtest()
