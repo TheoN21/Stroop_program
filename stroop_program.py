@@ -76,7 +76,7 @@ text_end_first_test = fontsmall.render('Ende des zweiten Teils des Tests.', True
 text_end_second_test1 = fontsmall.render('Ende des Tests. Das PDF mit den Ergebnissen wird automatisch erstellt.', True,(255, 255, 255))
 text_end_second_test2 = fontsmall.render('Das Programm wird in 10 Sekunden beendet.', True, (255, 255, 255))
 
-textInstructionscontrol1 = fontsmall.render("Im Folgenden sehen Sie die Farbwörter blau und gelb in weiß geschrieben.",True, (255, 255, 255))
+textInstructionscontrol1 = fontsmall.render("Im Folgenden sehen Sie die Farbwörter Blau und Gelb in weiß geschrieben.",True, (255, 255, 255))
 textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die passende", True, (255, 255, 255))
 textInstructionscontrol3 = fontsmall.render("Taste drücken. Nach einer Weile erscheint das Wort „Wechsel“ und Sie sehen", True, (255, 255, 255))
 textInstructionscontrol4 = fontsmall.render("anschließend ein Rechteck entweder in blau oder gelb.", True, (255, 255, 255))
@@ -96,7 +96,7 @@ textInstructions10 = fontsmall.render("auf die Schriftfarbe. Bei Fehlern ertönt
 textInstructions11 = fontsmall.render("Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
 
 textInstruct_uncued1 = fontsmall.render("Im Folgenden sehen Sie Farbwörter in blau und gelb geschrieben. Dabei sind ", True, (255, 255, 255))
-textInstruct_uncued2 = fontsmall.render("Farbe und Farbwort stets verschiedenen.", True, (255, 255, 255))
+textInstruct_uncued2 = fontsmall.render("Farbe und Farbwort stets verschieden.", True, (255, 255, 255))
 textInstruct_uncued3 = fontsmall.render("Sie bekommen immer die Anweisung, ob Sie auf die Farbe, in der das Wort", True, (255, 255, 255))
 textInstruct_uncued4 = fontsmall.render("geschrieben ist, reagieren sollen (in diesem Beispiel „blau“) oder ob Sie ", True, (255, 255, 255))
 textInstruct_uncued5 = fontsmall.render("das Wort lesen sollen (in diesem Beispiel „gelb“).", True, (255, 255, 255))
