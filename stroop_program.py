@@ -14,15 +14,13 @@ pandas                    2.1.3
 pygame                    2.5.2
 """
 
-import pygame
-import easygui as eas
 import sys
+import pygame
 import numpy as np
 import pandas as pd
+import easygui as eas
 from fpdf import FPDF
 from fpdf.enums import TableCellFillMode
-
-
 
 
 '''
