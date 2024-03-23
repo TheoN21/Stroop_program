@@ -24,4 +24,6 @@ Notes
 
 Demo
 ----------
+Demo of the cued Stroop test and the automatically created PDF:
+
 https://github.com/TheoN21/Stroop_program/assets/146637172/da773f5a-4c36-442b-8173-7881e4273b39
