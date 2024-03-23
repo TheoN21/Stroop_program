@@ -1,5 +1,4 @@
-Stroop_program
-=====
+# Stroop_program
 Modified Stroop reaction time test created with Python 3.11
 
 About
