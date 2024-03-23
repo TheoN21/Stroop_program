@@ -7,9 +7,9 @@ build_exe_options = {
 
 
 setup(
-    name="Stroop Test Version 2 Cue zuerst",
+    name="Stroop Test",
     version="0.1",
-    description="Stroop test Cue zuerst",
+    description="Stroop test Cue first",
     options={"build_exe": build_exe_options},
     executables=[Executable("stroop_program.py",base="Win32GUI" )],
 )
