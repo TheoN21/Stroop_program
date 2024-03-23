@@ -15,7 +15,7 @@ Features
 Notes
 ----------
 The entire program is in German, but can of course be adapted to other languages. 
-The program is scaled for a 2560x 1600 resolution with a 175% zoom, which can be easily modified by changing the [scalers x](https://github.com/TheoN21/Stroop_program/blob/f52325f84f408b627a5a2811eefcc79f9eecc48c/stroop_program.py#L129) and [y](https://github.com/TheoN21/Stroop_program/blob/f52325f84f408b627a5a2811eefcc79f9eecc48c/stroop_program.py#L130) in the code.
+The program is scaled for a 2560x 1600 resolution with a 175% zoom, which can be easily modified by changing the [scalers x](https://github.com/TheoN21/Stroop_program/blob/b1dd3771684aeb6f8c30eef3d62ea6ab6abeda08/stroop_program.py#L133) and [y](https://github.com/TheoN21/Stroop_program/blob/b1dd3771684aeb6f8c30eef3d62ea6ab6abeda08/stroop_program.py#L134) in the code.
 I added the instructions on how to use the program in [German](https://github.com/TheoN21/Stroop_program/blob/main/Hinweise%20zum%20Stroop%20test.docx) and in [English](https://github.com/TheoN21/Stroop_program/blob/main/Notes%20on%20the%20Stroop%20Test.docx), which also includes more details about the design of each test.
 Create a folder with the stroop_program.py, needed packages and the [error_sound.ogg](https://github.com/TheoN21/Stroop_program/blob/main/error_sound.ogg) file and use [setup.py](https://github.com/TheoN21/Stroop_program/blob/main/setup.py) to create an .exe file of the program.
 
