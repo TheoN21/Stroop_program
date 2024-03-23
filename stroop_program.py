@@ -1,4 +1,4 @@
-"""
+ """
 File: stroop_program.py
 Date start of project: 17.11.2023
 Author: Theodor Nowicki
@@ -8,10 +8,11 @@ Sound downloaded from mixkit.co, file name mixkit-game-show-wrong-answer-buzz-95
 """
 Requirements
 Python                    3.11.4
-fpdf2                     2.7.7
+pygame                    2.5.2
 numpy                     1.26.2
 pandas                    2.1.3
-pygame                    2.5.2
+fpdf2                     2.7.7
+easygui                   0.98.3
 """
 
 import sys
@@ -46,37 +47,36 @@ RT_list_control_read_wrong = []
 RT_list_control_color_correct = []
 RT_list_control_color_wrong = []
 
+
 # Font file
 pygame.font.init()
 font = pygame.font.SysFont('verdana.ttf', 100)
 fontsmall = pygame.font.SysFont('verdana.ttf', 40)
 
-textfirstscreen0 = fontsmall.render('Bei den folgenden Aufgaben geht es um die Farben Blau und Gelb.', True, (255, 255, 255))
-textfirstscreen1 = fontsmall.render('Vor jeder Aufgabe erhalten Sie eine genaue Erklärung und einige', True, (255, 255, 255))
-textfirstscreen2 = fontsmall.render('Beispielaufgaben zum Üben.', True, (255, 255, 255))
+textfirstscreen0 = fontsmall.render('In dem folgenden Test geht es um die Farben Gelb und Blau. ', True, (255, 255, 255))
+textfirstscreen1 = fontsmall.render('Vor jeder Aufgabe bekommen Sie eine genaue Anleitung und ', True, (255, 255, 255))
+textfirstscreen2 = fontsmall.render('ein paar Übungsaufgaben.', True, (255, 255, 255))
 
 textStart = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung zu kommen.', True, (255, 255, 255))
-
-
 textcontrolstart = fontsmall.render('Drücken Sie bitte die Leertaste um den ersten Teil des Tests zu starten.', True,(255, 255, 255))
 textTask1Instructions = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung des zweiten Teil des Tests zu kommen.', True, (255, 255, 255))
 textTask1Start = fontsmall.render('Drücken Sie bitte die Leertaste um den zweiten Teil des Tests zu starten.', True,(255, 255, 255))
 textTask2Instructions = fontsmall.render('Drücken Sie bitte die Leertaste um zu der Anleitung des letzten Teil des Tests zu kommen.', True, (255, 255, 255))
-textTask2Start = fontsmall.render('Drücken Sie bitte die Leertaste um den letzten Teil des Test zu starten.', True,(255, 255, 255))
+textTask2Start = fontsmall.render('Drücken Sie bitte die Leertaste um den letzten Teil des Tests zu starten.', True,(255, 255, 255))
 
 
 textweiter = fontsmall.render('Drücken Sie bitte die Leertaste um fortzufahren', True, (255, 255, 255))
 textexercise = fontsmall.render('Drücken Sie bitte die Leertaste um die Übung zu starten', True, (255, 255, 255))
 text_wait1 = fontsmall.render('Test wurde angehalten! ', True, (255, 255, 255))
 text_wait2 = fontsmall.render('Drücken Sie bitte Escape um abzubrechen oder die Taste W um fortzufahren.', True,(255, 255, 255))
-text_end_control = fontsmall.render('Ende des ersten Teils des Tests.', True, (255, 255, 255))
-text_end_first_test = fontsmall.render('Ende des zweiten Teils des Tests.', True, (255, 255, 255))
+text_end_control = fontsmall.render('Ende des ersten Teil des Tests.', True, (255, 255, 255))
+text_end_first_test = fontsmall.render('Ende des zweiten Teil des Tests.', True, (255, 255, 255))
 text_end_second_test1 = fontsmall.render('Ende des Tests. Das PDF mit den Ergebnissen wird automatisch erstellt.', True,(255, 255, 255))
 text_end_second_test2 = fontsmall.render('Das Programm wird in 10 Sekunden beendet.', True, (255, 255, 255))
 
 textInstructionscontrol1 = fontsmall.render("Im Folgenden sehen Sie die Farbwörter Blau und Gelb in weiß geschrieben.",True, (255, 255, 255))
-textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die passende", True, (255, 255, 255))
-textInstructionscontrol3 = fontsmall.render("Taste drücken. Nach einer Weile erscheint das Wort „Wechsel“ und Sie sehen", True, (255, 255, 255))
+textInstructionscontrol2 = fontsmall.render("Sie sollen das Wort lesen, und so schnell wie möglich die passende Taste", True, (255, 255, 255))
+textInstructionscontrol3 = fontsmall.render("drücken. Nach einer Weile erscheint das Wort „Wechsel“ und Sie sehen", True, (255, 255, 255))
 textInstructionscontrol4 = fontsmall.render("anschließend ein Rechteck entweder in blau oder gelb.", True, (255, 255, 255))
 textInstructionscontrol5 = fontsmall.render("Sie sollen dann so schnell wie möglich die blaue oder gelbe Taste drücken.", True,(255, 255, 255))
 textInstructionscontrol6 = fontsmall.render("Bei Fehlern ertönt ein Warnton. Sie haben jetzt die Möglichkeit den Test zu üben.", True, (255, 255, 255))
@@ -111,6 +111,7 @@ textWord = font.render('LESEN', True, (255, 255, 255))
 textSwitch = font.render('WECHSEL', True, (255, 255, 255))
 textNoncue = font.render('BEREIT', True, (255, 255, 255))
 
+
 entry_text = 'Bitte geben Sie die folgenden Daten ein:'
 entry_title = 'Patientendaten'
 entry_input_list = ['Testdatum', 'Vollständiger Name', 'Geburtsdatum', 'Geschlecht', 'Probandengruppe']
@@ -121,16 +122,20 @@ error_sound = pygame.mixer.Sound("error_sound.ogg")
 '''
 Setup
 '''
+
 clock = pygame.time.Clock()
 pygame.init()
 pygame.display.set_caption("Stroop Test")
 desk_info = pygame.display.Info()
-screen = pygame.display.set_mode((desk_info.current_w, desk_info.current_h), pygame.NOFRAME, pygame.SCALED)
-scale_x = 1.07
-scale_y = 0.94
+width = desk_info.current_w
+height = desk_info.current_h
+screen = pygame.display.set_mode((width, height), pygame.NOFRAME, pygame.SCALED)
+scale_x = 1
+scale_y = 0.8
 pygame.event.set_blocked(
-    [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION, pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,
-     pygame.WINDOWFOCUSGAINED, pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
+      [pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP, pygame.MOUSEMOTION, pygame.ACTIVEEVENT, pygame.APPMOUSEFOCUS,
+      pygame.WINDOWFOCUSGAINED, pygame.WINDOWFOCUSLOST, pygame.WINDOWENTER, pygame.WINDOWLEAVE])
+
 
 '''
 Functions
@@ -1593,12 +1598,12 @@ def controltest():
     main = True
     while main:
         screen.fill(pygame.Color("gray40"))
-        screen.blit(textfirstscreen0, (240 * scale_x, 200 * scale_y))
-        screen.blit(textfirstscreen1, (240 * scale_x, 250 * scale_y))
-        screen.blit(textfirstscreen2, (240 * scale_x, 300 * scale_y))
-        pygame.draw.rect(screen, YELLOW, pygame.Rect(300 * scale_x, 500 * scale_y, 225, 90))
-        pygame.draw.rect(screen, BLUE, pygame.Rect(900 * scale_x, 500 * scale_y, 225, 90))
-        screen.blit(textStart, (310 * scale_x, 800 * scale_y))
+        screen.blit(textfirstscreen0, (320 * scale_x, 200 * scale_y))
+        screen.blit(textfirstscreen1, (320 * scale_x, 250 * scale_y))
+        screen.blit(textfirstscreen2, (320 * scale_x, 300 * scale_y))
+        pygame.draw.rect(screen, YELLOW, pygame.Rect(310 * scale_x, 500 * scale_y, 225 , 90))
+        pygame.draw.rect(screen, BLUE, pygame.Rect(910 * scale_x, 500 * scale_y, 225, 90))
+        screen.blit(textStart, (310 * scale_x, 1000 * scale_y))
         pygame.display.update()
         pygame.event.pump()
         events = pygame.event.get()
@@ -1613,11 +1618,11 @@ def controltest():
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 screen.fill(pygame.Color("gray40"))
-                screen.blit(textInstructionscontrol1, (240 * scale_x, 150 * scale_y))
+                screen.blit(textInstructionscontrol1, (250 * scale_x, 150 * scale_y))
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.time.delay(200)
-                screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                screen.blit(textweiter, (418 * scale_x, 1000 * scale_y))
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.event.clear()
@@ -1659,7 +1664,7 @@ def controltest():
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.time.delay(200)
-                            screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                            screen.blit(textweiter, (420 * scale_x, 1000 * scale_y))
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.event.clear()
@@ -1700,7 +1705,7 @@ def controltest():
                                         pygame.display.flip()
                                         pygame.event.pump()
                                         pygame.time.delay(200)
-                                        screen.blit(textexercise, (360 * scale_x, 800 * scale_y))
+                                        screen.blit(textexercise, (360 * scale_x, 1000 * scale_y))
                                         pygame.display.flip()
                                         pygame.event.pump()
                                         pygame.event.clear()
@@ -1713,7 +1718,7 @@ def controltest():
                                         elif exercisecontrol_event.type == pygame.KEYDOWN and exercisecontrol_event.key == pygame.K_SPACE:
                                             control_exercise_block()
                                             screen.fill(pygame.Color("gray40"))
-                                            screen.blit(textcontrolstart, (265 * scale_x, 850 * scale_y))
+                                            screen.blit(textcontrolstart, (265 * scale_x, 1000 * scale_y))
                                             pygame.display.flip()
                                             pygame.event.pump()
                                             pygame.time.delay(200)
@@ -1745,7 +1750,7 @@ def cuedtest():
     while main:
         screen.fill(pygame.Color("gray40"))
         screen.blit(text_end_control, (520 * scale_x, 300 * scale_y))
-        screen.blit(textTask1Instructions, (137 * scale_x, 850 * scale_y))
+        screen.blit(textTask1Instructions, (137 * scale_x, 1000 * scale_y))
         pygame.display.update()
         pygame.event.pump()
         events = pygame.event.get()
@@ -1765,7 +1770,7 @@ def cuedtest():
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.time.delay(200)
-                screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                screen.blit(textweiter, (420 * scale_x, 1000 * scale_y))
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.event.clear()
@@ -1808,7 +1813,7 @@ def cuedtest():
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.time.delay(200)
-                            screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                            screen.blit(textweiter, (420 * scale_x, 1000 * scale_y))
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.event.clear()
@@ -1828,7 +1833,7 @@ def cuedtest():
                                 pygame.display.flip()
                                 pygame.event.pump()
                                 pygame.time.delay(200)
-                                screen.blit(textexercise, (360 * scale_x, 800 * scale_y))
+                                screen.blit(textexercise, (360 * scale_x, 1000 * scale_y))
                                 pygame.display.flip()
                                 pygame.event.pump()
                                 pygame.event.clear()
@@ -1841,7 +1846,7 @@ def cuedtest():
                                 elif exercise_event.type == pygame.KEYDOWN and exercise_event.key == pygame.K_SPACE:
                                     cued_exercise_block()
                                     screen.fill(pygame.Color("gray40"))
-                                    screen.blit(textTask1Start, (260 * scale_x, 850 * scale_y))
+                                    screen.blit(textTask1Start, (260 * scale_x, 1000 * scale_y))
                                     pygame.display.flip()
                                     pygame.event.pump()
                                     pygame.time.delay(200)
@@ -1881,7 +1886,7 @@ def uncuedtest():
     while main:
         screen.fill(pygame.Color("gray40"))
         screen.blit(text_end_first_test, (520 * scale_x, 300 * scale_y))
-        screen.blit(textTask2Instructions, (145 * scale_x, 850 * scale_y))
+        screen.blit(textTask2Instructions, (145 * scale_x, 1000 * scale_y))
         pygame.display.update()
         pygame.event.pump()
         events = pygame.event.get()
@@ -1901,7 +1906,7 @@ def uncuedtest():
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.time.delay(200)
-                screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                screen.blit(textweiter, (420 * scale_x, 1000 * scale_y))
                 pygame.display.flip()
                 pygame.event.pump()
                 pygame.event.clear()
@@ -1944,7 +1949,7 @@ def uncuedtest():
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.time.delay(200)
-                            screen.blit(textweiter, (420 * scale_x, 800 * scale_y))
+                            screen.blit(textweiter, (420 * scale_x, 1000 * scale_y))
                             pygame.display.flip()
                             pygame.event.pump()
                             pygame.event.clear()
@@ -1962,7 +1967,7 @@ def uncuedtest():
                                 pygame.display.flip()
                                 pygame.event.pump()
                                 pygame.time.delay(200)
-                                screen.blit(textexercise, (360 * scale_x, 800 * scale_y))
+                                screen.blit(textexercise, (360 * scale_x, 1000 * scale_y))
                                 pygame.display.flip()
                                 pygame.event.pump()
                                 pygame.event.clear()
@@ -1975,7 +1980,7 @@ def uncuedtest():
                                 elif uncued_exercise_event.type == pygame.KEYDOWN and uncued_exercise_event.key == pygame.K_SPACE:
                                     uncued_exercise_block()
                                     screen.fill(pygame.Color("gray40"))
-                                    screen.blit(textTask2Start, (272 * scale_x, 850 * scale_y))
+                                    screen.blit(textTask2Start, (272 * scale_x, 1000 * scale_y))
                                     pygame.display.flip()
                                     pygame.event.pump()
                                     pygame.time.delay(200)
@@ -2030,6 +2035,5 @@ while main:
             cuedtest()
         else:
             uncuedtest()
-
 
 
