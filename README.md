@@ -14,7 +14,7 @@ Features
 
 Installing
 ----------
-Create a Python virtual environment with the build files [stroop_program.py](https://github.com/TheoN21/Stroop_program/blob/main/build/stroop_program.py), needed packages as indicated in the script, the [error_sound.ogg](https://github.com/TheoN21/Stroop_program/blob/main/build/error_sound.ogg) file and use [setup.py](https://github.com/TheoN21/Stroop_program/blob/main/build/setup.py) to create an .exe file of the program
+Create a Python virtual environment with the build files [stroop_program.py](https://github.com/TheoN21/Stroop_program/blob/main/build/stroop_program.py), needed packages as indicated in the script, [error_sound.ogg](https://github.com/TheoN21/Stroop_program/blob/main/build/error_sound.ogg) and use [setup.py](https://github.com/TheoN21/Stroop_program/blob/main/build/setup.py) to create an .exe file of the program
 
 Notes
 ----------
