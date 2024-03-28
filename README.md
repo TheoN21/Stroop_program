@@ -22,7 +22,6 @@ Installing
 Notes
 ----------
 - The entire program is in German, but can of course be adapted to other languages (let me know if you need some help with that!)
-   
 - The program is scaled for a 2560 x 1600 resolution with a 175% zoom, which can be easily modified by changing the [scalers x](https://github.com/TheoN21/Stroop_program/blob/473847f92f32138f6a1aeb3aa047de4bee549c3e/build/stroop_program.py#L133) and [y](https://github.com/TheoN21/Stroop_program/blob/473847f92f32138f6a1aeb3aa047de4bee549c3e/build/stroop_program.py#L134) 
 - I added the instructions on how to use the program in [German](https://github.com/TheoN21/Stroop_program/blob/main/Instructions/Hinweise%20zum%20Stroop%20test.docx) and in [English](https://github.com/TheoN21/Stroop_program/blob/main/Instructions/Notes%20on%20the%20Stroop%20Test.docx), which also includes more details about the design of the program
 
