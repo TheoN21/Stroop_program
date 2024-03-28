@@ -15,7 +15,7 @@ Features
 Installing
 ----------
 1. Clone repo
-2. Create a Python virtual environment with the [build files](https://github.com/TheoN21/Stroop_program/tree/main/build),
+2. Create a Python virtual environment with the [build files](https://github.com/TheoN21/Stroop_program/tree/main/build)
 3. Download all needed packages as indicated in [stroop_program.py](https://github.com/TheoN21/Stroop_program/blob/main/build/stroop_program.py)
 4. Follow [setup.py](https://github.com/TheoN21/Stroop_program/blob/main/build/setup.py) to create an .exe file of the program
 
