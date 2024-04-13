@@ -1,4 +1,4 @@
-# Stroop_program
+# Stroop program
 
 About
 -----
